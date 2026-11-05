@@ -79,7 +79,12 @@ ChatRelay syncs the chat history of AI coding assistants (**Claude Code** and **
 - **Fixes file paths.** Your project might be `C:\Users\me\shop` on one PC and `D:\work\shop` on another, or `/home/me/shop` on Linux. ChatRelay rewrites every path inside the chat (working folder, tool inputs and outputs, file links, message text) to the path on the receiving PC.
 - **Only sends what changed.** After the first upload, only the new lines of a conversation travel: a few KB instead of the whole file.
 - **Never loses work.** It never edits your originals when uploading. It backs up every file before it changes it, shows a preview (dry run) first, and never overwrites a conversation that changed on both PCs: it keeps both.
-- **Works by itself.** With auto-sync on, Claude Code conversations are uploaded when a session ends and downloaded when a session starts. Codex conversations are uploaded and downloaded every 15 minutes in the background.
+- **Works by itself.** With auto-sync on, Claude Code conversations are uploaded when a session ends and downloaded when a session starts. Codex conversations are uploaded about a minute after a chat goes quiet, and downloaded every 15 minutes.
+- **Searches everything.** Find any prompt or answer in every project and every tool, in under a second.
+- **Continues in the other tool.** Turn a Codex conversation into a Claude Code one, or the other way round, and keep going with the whole history.
+- **Shares one conversation** as Markdown, PDF or a secret link, with secrets hidden.
+- **Can encrypt everything** with a password, so GitHub only ever stores scrambled data.
+- **Shows your usage:** conversations, messages and tokens per day, models, the hours you work, busiest projects and longest conversations.
 - **Summarizes.** It turns a project's whole history (from every tool) into a `HANDOFF.md`: what's done, decisions, open bugs, next steps, files touched. It can also put a short version into `CLAUDE.md`, `AGENTS.md` or `GEMINI.md`, so the next tool starts with the context.
 - **Read anywhere.** A read-only web page and an Android app show all your conversations from the GitHub storage, on any device.
 - **Looks like VS Code.** Black-and-white, VS Code-style desktop app, with dark and light themes, a simple view for everyday use and an advanced view with every detail.
@@ -89,9 +94,12 @@ ChatRelay syncs the chat history of AI coding assistants (**Claude Code** and **
 | Tool | Where it runs | View chats | Sync between PCs | Restore into the tool | Context file |
 |---|---|---|---|---|---|
 | **Claude Code** | Terminal CLI, VS Code extension | ✅ | ✅ (with auto-sync hooks) | ✅ `claude --resume`, VS Code history | `CLAUDE.md` |
-| **OpenAI Codex** | Codex CLI, VS Code extension, Codex desktop app | ✅ | ✅ (background, every 15 min) | ✅ `codex resume`, Codex sidebar | `AGENTS.md` |
-| Gemini CLI | Terminal | planned | planned | planned | `GEMINI.md` (summary target already available) |
-| Kiro (IDE and CLI), Cursor, Antigravity | | planned | planned | planned | |
+| **OpenAI Codex** | Codex CLI, VS Code extension, Codex desktop app | ✅ | ✅ (upload ~1 min after a chat goes quiet, download every 15 min) | ✅ `codex resume`, Codex sidebar | `AGENTS.md` |
+| **Antigravity** | Antigravity IDE, Antigravity CLI | ✅ | ✅ read-only: viewable, searchable and summarizable on every device | ❌ (not written back into Antigravity) | `GEMINI.md` |
+| Gemini CLI | Terminal | ❌ Google no longer lets personal accounts sign in to it (they are moved to Antigravity, supported above) | | | `GEMINI.md` (summary target available) |
+| **Cursor** | Cursor editor (Agent chat) | ✅ | ✅ read-only: viewable, searchable and summarizable on every device | ❌ (not written back into Cursor) | `AGENTS.md` |
+| **Kiro** | Kiro editor (agent chat) | ✅ | ✅ read-only: viewable, searchable and summarizable on every device | ❌ (not written back into Kiro) | `AGENTS.md` |
+| Kiro CLI, Cursor CLI | | planned | planned | planned | |
 
 Each tool keeps its history in its own undocumented format, and those formats change between versions. So ChatRelay checks the format it finds on your PC. If it sees a version it doesn't know, it still shows the conversations, but **turns off writing** for that tool and tells you why in **Settings → AI tools**. It never guesses.
 
@@ -113,7 +121,7 @@ Download `ChatRelay_<version>.apk` from the same release page and open it on you
 
 ### macOS and Linux
 
-The Rust engine and the app build on macOS and Linux (see [Building from source](#building-from-source-and-development)), but no installers are published for them yet and they haven't been tested.
+A GitHub Actions workflow (`.github/workflows/desktop-mac-linux.yml`) builds a macOS (Apple silicon) `.dmg` and a Linux `.AppImage` and `.deb`, and can add them, with their update entries, to a release. They are not code-signed (macOS: right-click → **Open** the first time) and have had little testing.
 
 ### Web
 
@@ -182,7 +190,7 @@ Turn on **Auto-sync** on both PCs and you don't need to do any of this by hand a
 
 ### Simple view and Advanced view
 
-- **Simple view** (default): your projects with a status dot, two big buttons (**Upload now** / **Bring history to this PC**), the auto-sync switch and the update check.
+- **Simple view** (default), in sections: the status of your history; **Sync** (**Upload now**, **Bring history to this PC**, the auto-sync switch); **Projects on this PC**, with filters (to upload, not uploaded, backed up, sync off), a search box and when each was last used; and **Help**.
 - **Advanced view**: a VS Code-like layout with an activity bar (Projects **Ctrl+Shift+E**, Sync **Ctrl+Shift+Y**, Summaries, Logs, Backups, Settings), tabs, a status bar and a command palette (**Ctrl+Shift+P**) with every action.
 
 Switch between them with **Ctrl+Shift+P → Switch to Simple/Advanced View**.
@@ -196,10 +204,39 @@ Switch between them with **Ctrl+Shift+P → Switch to Simple/Advanced View**.
 | Red | Last sync failed | Open **Logs** for the reason |
 | Grey | Never synced | Push it once |
 | Hollow circle | No project identity yet (not linked) | Push it (a link is created) or **Link** it to the project from the other PC |
+| Crossed-out circle | Sync is off for this project on this PC | **Turn sync on** on the project's page, if you want it synced again |
 
 ### Conversations from several tools
 
 Every conversation has a small badge with its tool (**Claude** or **Codex**). Projects where you used more than one tool show a **filter** (All / Claude Code / Codex). Opening a conversation shows the full transcript: your messages, the assistant's answers, tool calls (commands run, files edited) and the list of changed files.
+
+### Search every conversation
+
+Open **Search** in the activity bar (**Ctrl+Shift+F**) and type a few words. ChatRelay finds every prompt you wrote and every answer the assistant gave that contains all of them, in every project and every tool (Claude Code and Codex), newest first and grouped by conversation, with the words highlighted. Click a match to open that conversation with the words already in its find box. Tool output (file contents, command output) is not searched. The first search reads your history once (under a second for about 2 GB); after that results are instant. From the command line: `claude-sync search <words>`.
+
+### Keep a project on this PC only
+
+Some projects should never leave a PC, for example client work on an office machine. On the project's page click **Don't sync** (or hover a project in the Simple view and click **don't sync**). From then on nothing from that project is uploaded, and it is not downloaded automatically (auto-sync hooks, background sync, "Upload everything"). A manual **Pull** still works. The project shows a crossed-out status dot and "sync off on this PC"; **Turn sync on** undoes it. From the command line: `claude-sync exclude <dir>` (`--remove` to undo, no folder to list them).
+
+### Continue a conversation in the other tool
+
+Open a conversation and click **Continue in Claude Code** (on a Codex conversation) or **Continue in Codex** (on a Claude Code one). ChatRelay adds a new conversation to that tool in the same project, with every prompt and answer; tool calls and changed files appear as short notes, because the two tools record them differently. Then open the project and run `claude --resume` or `codex resume` (or pick it in the VS Code panel). The original conversation is not changed, and nothing is written while the target tool is running.
+
+### Share a conversation
+
+Open a conversation and click **Share**: copy it as Markdown, save a `.md` file, **Save as PDF** (the print dialog's "Save as PDF"), or **Create link**, a secret GitHub Gist that anyone with the link can read. Prompts and answers are included (tool calls if you tick it; thinking and tool output never), and keys, passwords, the project's `.env` values and your "never send" list are hidden first. A link needs a GitHub token with the `gist` scope: the GitHub CLI's login is used if you have one, or add one in **Settings → Secrets → GitHub gist token**.
+
+### Usage
+
+**Usage** in the activity bar shows, for the last 7, 30 or 90 days:
+
+- Conversations, messages, tokens and active days, each compared with the period before, plus your current and longest streak.
+- Activity per day, as conversations, messages or tokens, split by tool.
+- When you work: a weekday × hour map.
+- Tokens: how many the AI wrote, new input, and how many were read from or written to the cache, by model.
+- Your projects and longest conversations; click one to open it.
+
+**Copy report** copies it all as Markdown. Token counts come from Claude Code and Codex; Antigravity, Cursor and Kiro don't record them. It is worked out on this PC; nothing is sent.
 
 ### Push and pull
 
@@ -211,7 +248,7 @@ Every conversation has a small badge with its tool (**Claude** or **Codex**). Pr
 When **Auto-sync** is on:
 
 - **Claude Code**: hooks in `~/.claude/settings.json` run ChatRelay when a Claude Code session **starts** (pull) and **ends** (push).
-- **Codex**: Codex has no such hook, so the desktop app checks every 15 minutes (starting 20 seconds after launch). It uploads projects whose Codex conversations changed and downloads new ones (skipped while Codex is running).
+- **Codex**: Codex has no such hook. The desktop app watches Codex's sessions and uploads a changed conversation about a minute after it goes quiet. Every 15 minutes (starting 20 seconds after launch) it also downloads new ones (skipped while Codex is running).
 - Uploads that failed because you were offline are queued and retried.
 
 You can turn auto-sync on or off in Settings, in the tray menu, or with `claude-sync hooks install|uninstall`.
@@ -257,7 +294,12 @@ Details that matter:
 
 Open **Summaries** (Advanced view), pick a project, tick the conversations (from any tool) and a model, then click **Generate handoff**.
 
-- Models: **Claude Opus 5.5** (default), Claude Sonnet 5.5 (faster, cheaper), Claude Haiku 5.5 (cheapest), Claude Fable 5.1 (most capable). You need an Anthropic API key (**Settings → Summaries**).
+- Models:
+  - **Your logins, no API key:** "Claude Code · Sonnet / Opus" and "Codex" run through the Claude Code or Codex already installed and signed in on this PC, with your own plan. They appear only when that tool is installed. The summary runs in an empty temporary folder with no tools, and nothing is saved to that tool's history.
+  - **Claude API** (Anthropic API key in **Settings → Secrets**): Claude Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.1.
+  - **OpenRouter** (OpenRouter API key): an automatic free model, Nemotron 3 Ultra, Gemma 4 31B and MiniMax M3.1 Flash (free), DeepSeek V4 Flash (paid, very cheap). Any OpenRouter model works from the CLI with `--model openrouter:<id>`.
+- Before anything is sent, ChatRelay shows what will be sent and to whom, which secrets it found and hid, and asks you to confirm.
+- On top of the secret patterns, the values in the project's `.env` files and everything in your **Settings → Never send** list (client names, internal hosts, …) are hidden by exact match.
 - The history is condensed first: your requests, the assistant's final answer of each turn, and the files changed. Long tool output and thinking are dropped. Conversations from all tools are merged in time order and labelled with their tool.
 - Long histories are summarized in ~100k-token parts and then merged.
 - The result has these sections: Project overview, What's done, Key decisions, Open bugs / known issues, Next steps, Files touched.
@@ -290,6 +332,7 @@ A read-only version of the app that opens the history in your **GitHub** backend
 - **Dry run for every import.** You see every file and every path rewrite before anything happens.
 - **Both versions are kept on conflict**, never overwritten.
 - **Secret scan.** Before uploading, ChatRelay looks for API keys and passwords: Anthropic, OpenAI, GitHub, AWS, Google, Slack and Stripe keys, JWTs, private keys, `.env`-style `SECRET=…` lines, and credentials inside URLs. You choose: **warn**, **redact** (replaced with `[REDACTED:kind]` in the uploaded copy only), or **off**.
+- **Optional end-to-end encryption** (GitHub storage). In **Settings → Encryption** set a password: from then on every file is encrypted on your PC (Argon2id key, XChaCha20-Poly1305) before it is uploaded, so GitHub and anyone who gets into the repository see only scrambled data. Enter the same password on each PC, and in the web viewer's or phone's Settings. A PC without it can't read or upload anything. **If you forget the password, nobody can read the history**, not even ChatRelay. **Encrypt files stored before** re-uploads older files encrypted; then **Storage → Remove old versions** deletes the unencrypted copies from the repository's history.
 - **Secrets stay in the OS keychain.** Your GitHub token and Anthropic key are never written to a file.
 - **Your logins are never touched.** ChatRelay does not read, copy or change Claude Code's or Codex's login files (`~/.claude/.credentials.json`, `~/.codex/auth.json`, …). Syncing history cannot log you out. If you get logged out, it comes from the tool itself (for example an expired session or signing in with another account on another PC).
 - **Private storage only.** Public GitHub repositories are refused.
@@ -304,14 +347,17 @@ Not synced, by design: `~/.claude/history.jsonl` (your up-arrow prompt history a
 | This machine | Machine name | Shown next to everything this PC uploads |
 | Sync backend | Folder / GitHub | Where history is stored; **Test** checks the connection |
 | AI tools | (status) | Each tool: installed or not, version, format detected, restore on/off, warnings, number of conversations, context file |
-| Automatic sync | Auto-sync | Claude Code hooks + 15-minute background sync |
+| Automatic sync | Auto-sync | Claude Code hooks, Codex upload a minute after a chat goes quiet, 15-minute background sync |
 | Automatic sync | Transcript retention (cleanupPeriodDays) | How long Claude Code keeps conversations before deleting them |
 | What to sync | Subagent transcripts (sidecars) | Claude Code's per-session `subagents/` and `tool-results/` folders |
 | What to sync | Project memory | Claude Code's per-project memory folder (`memory/`) |
 | What to sync | Secret scan before upload | Off / Warn / Auto-redact |
 | What to sync | Versions kept (folder backend) | Previous copies of each file kept by the folder backend |
-| Secrets | GitHub token, Anthropic API key | Stored in the OS keychain (**Remove from keychain** deletes one) |
+| Encryption (GitHub) | Password | Turns on end-to-end encryption, or unlocks an encrypted history on this PC; **Encrypt files stored before** |
+| Storage (GitHub) | Remove old versions | Shows the repository's size and deletes old versions from its history (every current conversation is kept) |
+| Secrets | GitHub token, Anthropic API key, OpenRouter API key, GitHub gist token | Stored in the OS keychain (**Remove from keychain** deletes one) |
 | Summaries | Default model | Model used for summaries |
+| Never send | List | Words and values hidden from summaries and shared conversations, on top of secrets and `.env` values |
 | Appearance | Theme | Dark / light |
 | About | Version, Check for updates | |
 
@@ -329,6 +375,10 @@ claude-sync pull [--cwd <dir>] [--project <id>] [--all] [--dry-run]
 claude-sync summarize [--cwd <dir>] [--model <id>] [--target handoff|claude-md|agents-md|gemini-md|none]
 claude-sync remote                        List projects stored in the backend
 claude-sync link <dir> <projectId>        Link a local folder to a remote project ID (--remove to unlink)
+claude-sync search <words…> [--json]      Search every conversation (prompts and answers) on this PC
+claude-sync storage [--compact]           Space used by the GitHub store; --compact removes old versions
+claude-sync usage [--days N] [--json]     Tokens used by Claude Code and Codex on this PC, by model
+claude-sync exclude [<dir>] [--remove]    Turn sync off (or back on) for a project on this PC; no <dir> lists them
 claude-sync config [key] [value]          Show or set config (machineName, backend.folder, backend.github, secretScan, ...)
 claude-sync secret set github-token|anthropic-api-key <value>
 claude-sync hooks install|uninstall       Add/remove the SessionStart/SessionEnd hooks
@@ -600,14 +650,14 @@ Keep the updater key backed up. Apps only accept updates signed with it; its pub
 - The Windows installer is not code-signed (SmartScreen warning).
 - Only Windows is tested. macOS and Linux build but have no published installers.
 - A conversation open on two PCs at the same time can't be merged live; it becomes a conflict copy.
-- Codex has no "session ended" hook, so Codex sync runs every 15 minutes rather than instantly.
+- Codex has no "session ended" hook, so a Codex conversation is uploaded about a minute after it goes quiet, not the moment it ends.
 - For paths longer than 200 characters Claude Code's exact folder-name hash isn't documented; ChatRelay prefers an existing folder whose sessions record the same `cwd`, and otherwise uses its own `-<hash>` suffix.
 - The web and phone viewers are read-only and need the GitHub backend.
 
 ## Roadmap
 
-- Adapters for Gemini CLI, Kiro (IDE and CLI), Cursor and Antigravity, one at a time, each verified against the real tool first.
-- Code-signed installers; macOS and Linux builds.
+- Adapters for the Kiro CLI and the Cursor CLI, one at a time, each verified against the real tool first. Restoring Antigravity conversations into Antigravity.
+- Code-signed installers; tested macOS and Linux builds.
 
 ## About the rename
 

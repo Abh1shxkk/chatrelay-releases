@@ -79,7 +79,12 @@ ChatRelay 会在你的多台电脑之间同步 AI 编程助手的聊天记录（
 - **自动修正文件路径。** 你的项目在一台电脑上可能是 `C:\Users\me\shop`，在另一台上是 `D:\work\shop`，在 Linux 上又是 `/home/me/shop`。ChatRelay 会把对话里的每一个路径（工作目录、工具的输入和输出、文件链接、消息正文）都改写成接收电脑上的路径。
 - **只发送有变化的部分。** 第一次上传之后，每次只传对话中新增的几行：几 KB，而不是整个文件。
 - **绝不丢失你的工作。** 上传时从不修改你的原始文件。每次修改文件之前都会先备份，先给你看预览（试运行），而且如果一段对话在两台电脑上都有改动，它绝不会互相覆盖，而是两份都保留。
-- **自动运行。** 打开自动同步后，Claude Code 的对话会在会话结束时自动上传、在会话开始时自动下载。Codex 的对话则每 15 分钟在后台上传和下载一次。
+- **自动运行。** 打开自动同步后，Claude Code 的对话会在会话结束时自动上传、在会话开始时自动下载。Codex 的对话会在聊天安静下来约一分钟后上传，并每 15 分钟下载一次。
+- **全局搜索。** 在所有项目、所有工具中查找任何提示词或回答，不到一秒就能找到。
+- **在另一个工具中继续。** 把 Codex 对话变成 Claude Code 对话，或者反过来，带着完整的历史继续工作。
+- **分享单个对话**，可以是 Markdown、PDF 或一个秘密链接，其中的密钥会被隐藏。
+- **可以加密一切**，使用一个密码，让 GitHub 上只存储无法读懂的数据。
+- **显示你的使用情况：** 每天的对话数、最常用的项目和工具。
 - **生成摘要。** 它能把一个项目的全部历史（来自所有工具）整理成一份 `HANDOFF.md`：做完了什么、做过哪些决定、还有哪些未解决的 bug、下一步做什么、改动过哪些文件。它还可以把简短版本写进 `CLAUDE.md`、`AGENTS.md` 或 `GEMINI.md`，让下一个工具一开始就了解上下文。
 - **随处查看。** 一个只读网页和一个 Android 应用，可以在任何设备上查看你存放在 GitHub 中的全部对话。
 - **外观像 VS Code。** 黑白配色、VS Code 风格的桌面应用，有深色和浅色主题，还有日常使用的简洁视图，以及显示所有细节的高级视图。
@@ -113,7 +118,7 @@ ChatRelay 会在你的多台电脑之间同步 AI 编程助手的聊天记录（
 
 ### macOS 和 Linux
 
-Rust 引擎和应用本身可以在 macOS 和 Linux 上构建（见[从源码构建](#从源码构建与开发)），但目前还没有发布这两个平台的安装包，也还没有经过测试。
+一个 GitHub Actions 工作流（`.github/workflows/desktop-mac-linux.yml`）会构建 macOS（Apple 芯片）的 `.dmg`，以及 Linux 的 `.AppImage` 和 `.deb`，并可以把它们连同更新条目一起添加到某个发布版本中。它们没有代码签名（macOS：第一次需要右键 → **Open**（打开）），测试也很少。
 
 ### 网页版
 
@@ -182,7 +187,7 @@ Rust 引擎和应用本身可以在 macOS 和 Linux 上构建（见[从源码构
 
 ### 简洁视图和高级视图
 
-- **Simple view**（简洁视图，默认）：显示你的项目和状态圆点、两个大按钮（**Upload now** / **Bring history to this PC**）、自动同步开关和检查更新。
+- **Simple view**（简洁视图，默认），分为几个部分：你的历史记录状态；**Sync**（同步：**Upload now**、**Bring history to this PC**、自动同步开关）；**Projects on this PC**（这台电脑上的项目），带有筛选（待上传、未上传、已备份、已关闭同步）、搜索框以及每个项目的最后使用时间；还有 **Help**（帮助）。
 - **Advanced view**（高级视图）：类似 VS Code 的布局，有活动栏（Projects 项目 **Ctrl+Shift+E**、Sync 同步 **Ctrl+Shift+Y**、Summaries 摘要、Logs 日志、Backups 备份、Settings 设置）、标签页、状态栏，以及包含所有操作的命令面板（**Ctrl+Shift+P**）。
 
 用 **Ctrl+Shift+P → Switch to Simple/Advanced View**（切换到简洁/高级视图）在两者之间切换。
@@ -196,10 +201,31 @@ Rust 引擎和应用本身可以在 macOS 和 Linux 上构建（见[从源码构
 | 红色 | 上次同步失败 | 打开 **Logs**（日志）查看原因 |
 | 灰色 | 从未同步过 | 推送一次 |
 | 空心圆 | 还没有项目身份（未关联） | 推送它（会自动创建关联），或者用 **Link** 把它关联到另一台电脑上的项目 |
+| 带斜线的圆 | 这台电脑上已关闭此项目的同步 | 如果想重新同步，在项目页面点击 **Turn sync on**（开启同步） |
 
 ### 来自多个工具的对话
 
 每段对话都有一个小标签，标明它来自哪个工具（**Claude** 或 **Codex**）。如果某个项目用过不止一个工具，会显示一个**筛选器**（All 全部 / Claude Code / Codex）。打开一段对话会显示完整记录：你的消息、助手的回答、工具调用（运行过的命令、编辑过的文件），以及改动过的文件列表。
+
+### 搜索所有对话
+
+在活动栏中打开 **Search**（搜索）（**Ctrl+Shift+F**），输入几个词。ChatRelay 会在所有项目和所有工具（Claude Code 和 Codex）中，找出你写过的、以及助手给出的所有包含这些词的提示词和回答，按从新到旧排列、按对话分组，并高亮显示这些词。点击一条结果即可打开那段对话，它的查找框里已经填好了这些词。工具输出（文件内容、命令输出）不在搜索范围内。第一次搜索会把你的历史读取一遍（约 2 GB 不到一秒）；之后结果都是即时出现。命令行用法：`claude-sync search <words>`。
+
+### 让项目只留在这台电脑上
+
+有些项目永远不应离开某台电脑，比如办公室电脑上的客户项目。在项目页面点击 **Don't sync**（不同步）（或在简洁视图中把鼠标悬停在项目上，点击 **don't sync**）。从此以后，这个项目的任何内容都不会上传，也不会被自动下载（自动同步钩子、后台同步、“Upload everything”（全部上传））。手动 **Pull**（拉取）仍然可用。该项目会显示一个带斜线的状态圆点和“sync off on this PC”（此电脑上已关闭同步）；点击 **Turn sync on** 即可撤销。命令行用法：`claude-sync exclude <dir>`（加 `--remove` 撤销；不指定文件夹则列出这些项目）。
+
+### 在另一个工具中继续对话
+
+打开一段对话，点击 **Continue in Claude Code**（在 Claude Code 中继续，用于 Codex 对话）或 **Continue in Codex**（在 Codex 中继续，用于 Claude Code 对话）。ChatRelay 会在那个工具的同一项目中添加一段新对话，包含每一条提示词和回答；工具调用和改动过的文件会显示为简短的备注，因为两个工具记录它们的方式不同。然后打开项目，运行 `claude --resume` 或 `codex resume`（或者在 VS Code 面板中选择它）。原来的对话不会被修改，目标工具运行时也不会写入任何内容。
+
+### 分享对话
+
+打开一段对话，点击 **Share**（分享）：复制为 Markdown、保存为 `.md` 文件、**Save as PDF**（另存为 PDF，即打印对话框中的“另存为 PDF”），或 **Create link**（创建链接），生成一个任何拿到链接的人都能阅读的秘密 GitHub Gist。其中包含提示词和回答（勾选后也包含工具调用；思考过程和工具输出永远不包含），并且会先隐藏密钥、密码、项目 `.env` 中的值以及你的“never send”（永不发送）列表。创建链接需要一个带有 `gist` 权限范围的 GitHub 令牌：如果你已登录 GitHub CLI，就会使用它的登录；否则请在 **Settings → Secrets → GitHub gist token**（设置 → 密钥 → GitHub Gist 令牌）中添加一个。
+
+### 使用情况
+
+活动栏中的 **Usage**（使用情况）会显示最近 7、30 或 90 天的：对话数、消息数、项目数和活跃天数、每天的对话数，以及你用得最多的项目和工具。这些都在这台电脑上计算，不会发送任何内容。
 
 ### 推送和拉取
 
@@ -211,7 +237,7 @@ Rust 引擎和应用本身可以在 macOS 和 Linux 上构建（见[从源码构
 当 **Auto-sync** 打开时：
 
 - **Claude Code**：`~/.claude/settings.json` 中的钩子会在 Claude Code 会话**开始**时（拉取）和**结束**时（推送）运行 ChatRelay。
-- **Codex**：Codex 没有这样的钩子，所以桌面应用每 15 分钟检查一次（启动后 20 秒开始第一次）。它会上传 Codex 对话有改动的项目，并下载新对话（Codex 运行时跳过）。
+- **Codex**：Codex 没有这样的钩子。桌面应用会监视 Codex 的会话，在有改动的对话安静下来约一分钟后上传它。此外，它每 15 分钟（启动后 20 秒开始第一次）下载新对话（Codex 运行时跳过）。
 - 因为离线而失败的上传会进入队列，稍后重试。
 
 你可以在设置里、托盘菜单里，或者用 `claude-sync hooks install|uninstall` 打开或关闭自动同步。
@@ -257,7 +283,12 @@ Push now（立即推送）· Pull now（立即拉取）· Auto-sync on/off（自
 
 打开 **Summaries**（摘要，高级视图），选择一个项目，勾选要包含的对话（可以来自任何工具）并选择一个模型，然后点击 **Generate handoff**（生成交接文档）。
 
-- 模型：**Claude Opus 5.5**（默认）、Claude Sonnet 5.5（更快、更便宜）、Claude Haiku 5.5（最便宜）、Claude Fable 5.1（能力最强）。你需要一个 Anthropic API 密钥（**Settings → Summaries**（设置 → 摘要））。
+- 模型：
+  - **使用你自己的登录，无需 API 密钥：**“Claude Code · Sonnet / Opus”和“Codex”通过这台电脑上已安装并已登录的 Claude Code 或 Codex 运行，使用你自己的套餐。只有安装了对应工具时才会出现。摘要在一个没有任何工具的空临时文件夹中运行，不会在该工具的历史记录里保存任何内容。
+  - **Claude API**（在 **Settings → Secrets**（设置 → 密钥）中填写 Anthropic API 密钥）：Claude Opus 5.5、Sonnet 5.5、Haiku 5.5、Fable 5.1。
+  - **OpenRouter**（OpenRouter API 密钥）：一个自动选择的免费模型、Nemotron 3 Ultra、Gemma 4 31B 和 MiniMax M3.1 Flash（免费），DeepSeek V4 Flash（付费，非常便宜）。在 CLI 中，任何 OpenRouter 模型都可以通过 `--model openrouter:<id>` 使用。
+- 在发送任何内容之前，ChatRelay 会显示将要发送什么、发给谁、发现并隐藏了哪些密钥，并请你确认。
+- 除了密钥模式之外，项目 `.env` 文件中的值，以及你在 **Settings → Never send**（设置 → 永不发送）列表中的所有内容（客户名称、内部主机等）都会按完全匹配被隐藏。
 - 历史记录会先被精简：保留你的请求、每一轮中助手的最终回答，以及改动过的文件。冗长的工具输出和思考过程会被去掉。来自所有工具的对话按时间顺序合并，并标注各自的工具。
 - 很长的历史记录会按大约 10 万 token 一段分别总结，然后再合并。
 - 结果包含以下几个部分：Project overview（项目概览）、What's done（已完成的工作）、Key decisions（关键决定）、Open bugs / known issues（未解决的 bug / 已知问题）、Next steps（下一步）、Files touched（改动过的文件）。
@@ -290,6 +321,7 @@ Push now（立即推送）· Pull now（立即拉取）· Auto-sync on/off（自
 - **每次导入都有试运行。** 在真正执行之前，你能看到每个文件和每一处路径改写。
 - **发生冲突时两个版本都会保留**，绝不会互相覆盖。
 - **密钥扫描。** 上传前，ChatRelay 会查找 API 密钥和密码：Anthropic、OpenAI、GitHub、AWS、Google、Slack 和 Stripe 的密钥，JWT，私钥，`.env` 风格的 `SECRET=…` 行，以及 URL 中包含的登录凭据。你可以选择：**warn**（警告）、**redact**（脱敏，只在上传的副本中替换为 `[REDACTED:kind]`）或 **off**（关闭）。
+- **可选的端到端加密**（GitHub 存储）。在 **Settings → Encryption**（设置 → 加密）中设置一个密码：从那以后，每个文件在上传前都会先在你的电脑上加密（Argon2id 密钥、XChaCha20-Poly1305），所以 GitHub 以及任何进入仓库的人都只能看到无法读懂的数据。在每台电脑上，以及网页查看器或手机的设置中，输入同一个密码。没有密码的电脑无法读取或上传任何内容。**如果忘记了密码，没有人能读取这些历史记录**，连 ChatRelay 也不能。**Encrypt files stored before**（加密之前存储的文件）会把旧文件加密后重新上传；然后用 **Storage → Remove old versions**（存储 → 删除旧版本）从仓库历史中删除未加密的副本。
 - **密钥保存在系统钥匙串中。** 你的 GitHub 令牌和 Anthropic 密钥从不写入任何文件。
 - **绝不碰你的登录信息。** ChatRelay 不会读取、复制或修改 Claude Code 或 Codex 的登录文件（`~/.claude/.credentials.json`、`~/.codex/auth.json`……）。同步历史记录不可能让你退出登录。如果你被登出了，那是工具本身造成的（例如会话过期，或者在另一台电脑上用另一个账户登录）。
 - **只使用私有存储。** 公开的 GitHub 仓库会被拒绝。
@@ -304,14 +336,17 @@ Push now（立即推送）· Pull now（立即拉取）· Auto-sync on/off（自
 | This machine（本机） | Machine name（电脑名称） | 显示在这台电脑上传的所有内容旁边 |
 | Sync backend（同步后端） | Folder / GitHub（文件夹 / GitHub） | 历史记录的存放位置；**Test**（测试）用于检查连接 |
 | AI tools（AI 工具） | （状态） | 每个工具：是否已安装、版本、检测到的格式、恢复功能开/关、警告、对话数量、上下文文件 |
-| Automatic sync（自动同步） | Auto-sync（自动同步） | Claude Code 钩子 + 每 15 分钟一次的后台同步 |
+| Automatic sync（自动同步） | Auto-sync（自动同步） | Claude Code 钩子、聊天安静下来一分钟后上传 Codex 对话、每 15 分钟一次的后台同步 |
 | Automatic sync（自动同步） | Transcript retention (cleanupPeriodDays)（对话保留天数） | Claude Code 在删除对话前保留多久 |
 | What to sync（同步内容） | Subagent transcripts (sidecars)（子代理对话记录） | Claude Code 每个会话的 `subagents/` 和 `tool-results/` 文件夹 |
 | What to sync（同步内容） | Project memory（项目记忆） | Claude Code 每个项目的记忆文件夹（`memory/`） |
 | What to sync（同步内容） | Secret scan before upload（上传前扫描密钥） | Off（关闭）/ Warn（警告）/ Auto-redact（自动脱敏） |
 | What to sync（同步内容） | Versions kept (folder backend)（保留的版本数（文件夹后端）） | 文件夹后端为每个文件保留的旧副本数量 |
-| Secrets（密钥） | GitHub token、Anthropic API key | 保存在系统钥匙串中（**Remove from keychain**（从钥匙串移除）可删除其中一个） |
+| Encryption (GitHub)（加密，GitHub） | Password（密码） | 开启端到端加密，或在这台电脑上解锁已加密的历史记录；**Encrypt files stored before** |
+| Storage (GitHub)（存储，GitHub） | Remove old versions（删除旧版本） | 显示仓库大小，并从仓库历史中删除旧版本（当前的所有对话都会保留） |
+| Secrets（密钥） | GitHub token、Anthropic API key、OpenRouter API key、GitHub gist token | 保存在系统钥匙串中（**Remove from keychain**（从钥匙串移除）可删除其中一个） |
 | Summaries（摘要） | Default model（默认模型） | 生成摘要时使用的模型 |
+| Never send（永不发送） | List（列表） | 在密钥和 `.env` 值之外，还要从摘要和分享的对话中隐藏的词和值 |
 | Appearance（外观） | Theme（主题） | 深色 / 浅色 |
 | About（关于） | Version（版本）、Check for updates（检查更新） | |
 
@@ -329,6 +364,9 @@ claude-sync pull [--cwd <dir>] [--project <id>] [--all] [--dry-run]
 claude-sync summarize [--cwd <dir>] [--model <id>] [--target handoff|claude-md|agents-md|gemini-md|none]
 claude-sync remote                        List projects stored in the backend
 claude-sync link <dir> <projectId>        Link a local folder to a remote project ID (--remove to unlink)
+claude-sync search <words…> [--json]      Search every conversation (prompts and answers) on this PC
+claude-sync storage [--compact]           Space used by the GitHub store; --compact removes old versions
+claude-sync exclude [<dir>] [--remove]    Turn sync off (or back on) for a project on this PC; no <dir> lists them
 claude-sync config [key] [value]          Show or set config (machineName, backend.folder, backend.github, secretScan, ...)
 claude-sync secret set github-token|anthropic-api-key <value>
 claude-sync hooks install|uninstall       Add/remove the SessionStart/SessionEnd hooks
@@ -637,14 +675,14 @@ npm run mobile:ios:build
 - Windows 安装程序没有代码签名（会出现 SmartScreen 警告）。
 - 只在 Windows 上测试过。macOS 和 Linux 可以构建，但没有发布安装包。
 - 同一段对话如果同时在两台电脑上打开，无法实时合并；它会变成一个冲突副本。
-- Codex 没有“会话结束”钩子，所以 Codex 同步是每 15 分钟运行一次，而不是即时同步。
+- Codex 没有“会话结束”钩子，所以 Codex 对话会在安静下来约一分钟后上传，而不是在结束的那一刻上传。
 - 对于超过 200 个字符的路径，Claude Code 文件夹名的确切哈希规则没有公开文档；ChatRelay 会优先使用一个已存在、且其中会话记录了相同 `cwd` 的文件夹，否则就使用它自己的 `-<hash>` 后缀。
 - 网页版和手机查看器是只读的，并且需要使用 GitHub 后端。
 
 ## 路线图
 
 - 为 Gemini CLI、Kiro（IDE 和 CLI）、Cursor 和 Antigravity 开发适配器，一次做一个，每个都先用真实工具验证。
-- 带代码签名的安装程序；macOS 和 Linux 版本。
+- 带代码签名的安装程序；经过测试的 macOS 和 Linux 版本。
 
 ## 关于改名
 

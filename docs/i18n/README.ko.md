@@ -79,7 +79,12 @@ ChatRelay는 AI 코딩 도우미(현재는 **Claude Code**와 **OpenAI Codex**)�
 - **파일 경로를 고쳐 줍니다.** 프로젝트가 한 PC에서는 `C:\Users\me\shop`이고 다른 PC에서는 `D:\work\shop`이거나, Linux에서는 `/home/me/shop`일 수 있습니다. ChatRelay는 대화 안의 모든 경로(작업 폴더, 도구 입력과 출력, 파일 링크, 메시지 본문)를 받는 PC의 경로로 다시 씁니다.
 - **바뀐 부분만 보냅니다.** 처음 업로드한 뒤에는 대화의 새 줄만 전송됩니다. 파일 전체 대신 몇 KB 정도입니다.
 - **작업을 절대 잃지 않습니다.** 업로드할 때 원본을 수정하지 않습니다. 파일을 바꾸기 전에는 항상 백업하고, 먼저 미리보기(드라이 런)를 보여 주며, 두 PC에서 모두 바뀐 대화는 덮어쓰지 않고 둘 다 보관합니다.
-- **알아서 작동합니다.** 자동 동기화를 켜면 Claude Code 대화는 세션이 끝날 때 업로드되고 세션이 시작될 때 다운로드됩니다. Codex 대화는 백그라운드에서 15분마다 업로드되고 다운로드됩니다.
+- **알아서 작동합니다.** 자동 동기화를 켜면 Claude Code 대화는 세션이 끝날 때 업로드되고 세션이 시작될 때 다운로드됩니다. Codex 대화는 채팅이 조용해지고 약 1분 뒤에 업로드되고, 15분마다 다운로드됩니다.
+- **모든 것을 검색합니다.** 모든 프로젝트와 모든 도구에서 어떤 프롬프트나 답변이든 1초 안에 찾을 수 있습니다.
+- **다른 도구에서 이어 갑니다.** Codex 대화를 Claude Code 대화로, 또는 그 반대로 바꿔서 전체 기록을 가진 채 계속 작업할 수 있습니다.
+- **대화 하나를 공유합니다.** Markdown, PDF 또는 비밀 링크로 공유하며, 비밀 정보는 숨겨집니다.
+- **모든 것을 암호화할 수 있습니다.** 비밀번호를 사용하므로 GitHub에는 알아볼 수 없는 데이터만 저장됩니다.
+- **사용량을 보여 줍니다.** 하루 대화 수, 가장 많이 쓴 프로젝트와 도구를 볼 수 있습니다.
 - **요약해 줍니다.** 프로젝트의 전체 기록(모든 도구의 기록)을 `HANDOFF.md`로 정리합니다. 완료한 일, 결정 사항, 남은 버그, 다음 단계, 수정한 파일이 담깁니다. 짧은 버전을 `CLAUDE.md`, `AGENTS.md` 또는 `GEMINI.md`에 넣어 줄 수도 있어서, 다음 도구가 맥락을 알고 시작할 수 있습니다.
 - **어디서나 읽을 수 있습니다.** 읽기 전용 웹 페이지와 Android 앱으로 어떤 기기에서든 GitHub 저장소에 있는 모든 대화를 볼 수 있습니다.
 - **VS Code처럼 생겼습니다.** 흑백의 VS Code 스타일 데스크톱 앱으로, 어두운 테마와 밝은 테마가 있고, 일상적으로 쓰기 좋은 간단 보기와 모든 세부 정보를 보여 주는 고급 보기가 있습니다.
@@ -113,7 +118,7 @@ ChatRelay는 AI 코딩 도우미(현재는 **Claude Code**와 **OpenAI Codex**)�
 
 ### macOS 및 Linux
 
-Rust 엔진과 앱은 macOS와 Linux에서도 빌드됩니다([소스에서 빌드하기](#소스에서-빌드하기-및-개발) 참고). 하지만 아직 이 운영체제용 설치 프로그램은 게시되지 않았고 테스트도 되지 않았습니다.
+GitHub Actions 워크플로(`.github/workflows/desktop-mac-linux.yml`)가 macOS(Apple 실리콘)용 `.dmg`와 Linux용 `.AppImage` 및 `.deb`를 빌드하고, 업데이트 항목과 함께 릴리스에 추가할 수 있습니다. 코드 서명은 되어 있지 않으며(macOS: 처음에는 오른쪽 클릭 → **Open**(열기)), 아직 테스트가 많이 되지 않았습니다.
 
 ### 웹
 
@@ -182,7 +187,7 @@ Codex의 경우 **먼저 Codex를 닫으세요**(CLI, VS Code 확장, 데스크�
 
 ### 간단 보기와 고급 보기
 
-- **간단 보기**(기본값): 상태 점이 붙은 프로젝트 목록, 큰 버튼 두 개(**Upload now** / **Bring history to this PC**), 자동 동기화 스위치, 업데이트 확인이 있습니다.
+- **간단 보기**(기본값)는 여러 섹션으로 나뉩니다. 기록의 상태, **Sync**(동기화: **Upload now**, **Bring history to this PC**, 자동 동기화 스위치), **Projects on this PC**(이 PC의 프로젝트: 필터(업로드할 것, 업로드 안 됨, 백업됨, 동기화 꺼짐), 검색 상자, 각 프로젝트를 마지막으로 사용한 시점), 그리고 **Help**(도움말)입니다.
 - **고급 보기**: VS Code와 비슷한 화면 구성으로, 활동 표시줄(Projects **Ctrl+Shift+E**, Sync **Ctrl+Shift+Y**, Summaries, Logs, Backups, Settings), 탭, 상태 표시줄, 그리고 모든 동작이 들어 있는 명령 팔레트(**Ctrl+Shift+P**)가 있습니다.
 
 두 보기는 **Ctrl+Shift+P → Switch to Simple/Advanced View**(간단/고급 보기로 전환)로 바꿀 수 있습니다.
@@ -196,10 +201,31 @@ Codex의 경우 **먼저 Codex를 닫으세요**(CLI, VS Code 확장, 데스크�
 | 빨간색 | 마지막 동기화 실패 | 원인을 보려면 **Logs**(로그)를 여세요 |
 | 회색 | 한 번도 동기화되지 않음 | 한 번 푸시하세요 |
 | 속이 빈 원 | 아직 프로젝트 식별 정보가 없음(연결되지 않음) | 푸시하거나(연결이 만들어집니다) 다른 PC의 프로젝트에 **Link**(연결)하세요 |
+| 사선이 그어진 원 | 이 PC에서 이 프로젝트의 동기화가 꺼져 있음 | 다시 동기화하려면 프로젝트 페이지에서 **Turn sync on**(동기화 켜기)을 누르세요 |
 
 ### 여러 도구의 대화
 
 모든 대화에는 어떤 도구인지 알려 주는 작은 배지(**Claude** 또는 **Codex**)가 붙어 있습니다. 둘 이상의 도구를 사용한 프로젝트에는 **필터**(All / Claude Code / Codex)가 표시됩니다. 대화를 열면 전체 기록이 보입니다. 여러분의 메시지, 어시스턴트의 답변, 도구 호출(실행한 명령, 수정한 파일), 그리고 변경된 파일 목록입니다.
+
+### 모든 대화 검색
+
+활동 표시줄에서 **Search**(검색)를 열고(**Ctrl+Shift+F**) 단어 몇 개를 입력하세요. ChatRelay는 모든 프로젝트와 모든 도구(Claude Code와 Codex)에서 그 단어를 모두 포함하는, 여러분이 쓴 프롬프트와 어시스턴트의 답변을 모두 찾아 줍니다. 결과는 최신순으로 대화별로 묶여 나오고, 단어가 강조 표시됩니다. 결과를 클릭하면 그 대화가 열리고, 찾기 상자에 단어가 이미 들어 있습니다. 도구 출력(파일 내용, 명령 출력)은 검색하지 않습니다. 첫 검색 때 기록을 한 번 읽습니다(약 2 GB에 1초 미만). 그 뒤로는 결과가 바로 나옵니다. 명령줄에서는 `claude-sync search <words>`를 사용하세요.
+
+### 프로젝트를 이 PC에만 두기
+
+어떤 프로젝트는 PC 밖으로 나가면 안 됩니다. 예를 들어 회사 컴퓨터에서 하는 고객 작업이 그렇습니다. 프로젝트 페이지에서 **Don't sync**(동기화 안 함)를 클릭하세요(또는 간단 보기에서 프로젝트에 마우스를 올리고 **don't sync**를 클릭하세요). 그때부터 그 프로젝트의 내용은 아무것도 업로드되지 않고, 자동으로 다운로드되지도 않습니다(자동 동기화 훅, 백그라운드 동기화, "Upload everything"(전체 업로드)). 수동 **Pull**은 계속 작동합니다. 프로젝트에는 사선이 그어진 상태 점과 "sync off on this PC"(이 PC에서 동기화 꺼짐)가 표시되며, **Turn sync on**으로 되돌릴 수 있습니다. 명령줄에서는 `claude-sync exclude <dir>`를 사용하세요(되돌리려면 `--remove`, 폴더를 지정하지 않으면 목록을 보여 줍니다).
+
+### 대화를 다른 도구에서 이어 가기
+
+대화를 열고 **Continue in Claude Code**(Claude Code에서 계속하기, Codex 대화일 때) 또는 **Continue in Codex**(Codex에서 계속하기, Claude Code 대화일 때)를 클릭하세요. ChatRelay가 그 도구의 같은 프로젝트에 모든 프롬프트와 답변이 담긴 새 대화를 추가합니다. 두 도구가 도구 호출과 변경된 파일을 서로 다르게 기록하기 때문에, 이것들은 짧은 메모로 표시됩니다. 그런 다음 프로젝트를 열고 `claude --resume` 또는 `codex resume`를 실행하세요(또는 VS Code 패널에서 고르세요). 원래 대화는 바뀌지 않으며, 대상 도구가 실행 중일 때는 아무것도 쓰지 않습니다.
+
+### 대화 공유하기
+
+대화를 열고 **Share**(공유)를 클릭하세요. Markdown으로 복사하거나, `.md` 파일로 저장하거나, **Save as PDF**(PDF로 저장, 인쇄 대화 상자의 "PDF로 저장")를 쓰거나, **Create link**(링크 만들기)로 링크가 있는 사람은 누구나 읽을 수 있는 비밀 GitHub Gist를 만들 수 있습니다. 프롬프트와 답변이 포함되고(도구 호출은 체크했을 때만, 생각 과정과 도구 출력은 절대 포함되지 않음), 키, 비밀번호, 프로젝트의 `.env` 값, "never send"(절대 보내지 않음) 목록은 먼저 숨겨집니다. 링크를 만들려면 `gist` 범위가 있는 GitHub 토큰이 필요합니다. GitHub CLI에 로그인되어 있으면 그 로그인을 사용하고, 아니면 **Settings → Secrets → GitHub gist token**(설정 → 비밀 정보 → GitHub Gist 토큰)에서 추가하세요.
+
+### 사용량
+
+활동 표시줄의 **Usage**(사용량)는 최근 7일, 30일 또는 90일 동안의 대화, 메시지, 프로젝트, 활동한 날 수, 하루 대화 수, 그리고 가장 많이 사용한 프로젝트와 도구를 보여 줍니다. 계산은 이 PC에서 하며, 아무것도 전송되지 않습니다.
 
 ### 푸시와 풀
 
@@ -211,7 +237,7 @@ Codex의 경우 **먼저 Codex를 닫으세요**(CLI, VS Code 확장, 데스크�
 **Auto-sync**(자동 동기화)가 켜져 있으면:
 
 - **Claude Code**: `~/.claude/settings.json`에 있는 훅이 Claude Code 세션이 **시작될 때**(풀)와 **끝날 때**(푸시) ChatRelay를 실행합니다.
-- **Codex**: Codex에는 이런 훅이 없으므로, 데스크톱 앱이 15분마다 확인합니다(실행 20초 후부터 시작). Codex 대화가 바뀐 프로젝트를 업로드하고 새 대화를 다운로드합니다(Codex가 실행 중이면 건너뜁니다).
+- **Codex**: Codex에는 이런 훅이 없습니다. 데스크톱 앱이 Codex 세션을 지켜보다가, 변경된 대화가 조용해지고 약 1분 뒤에 업로드합니다. 또한 15분마다(실행 20초 후부터 시작) 새 대화를 다운로드합니다(Codex가 실행 중이면 건너뜁니다).
 - 오프라인이어서 실패한 업로드는 대기열에 넣었다가 다시 시도합니다.
 
 자동 동기화는 설정, 트레이 메뉴, 또는 `claude-sync hooks install|uninstall` 명령으로 켜고 끌 수 있습니다.
@@ -257,7 +283,12 @@ Push now(지금 푸시) · Pull now(지금 풀) · Auto-sync on/off(자동 동�
 
 **Summaries**(요약)(고급 보기)를 열고 프로젝트를 고른 뒤, 대화(어느 도구의 대화든)와 모델을 선택하고 **Generate handoff**(인계 문서 생성)를 클릭하세요.
 
-- 모델: **Claude Opus 5.5**(기본값), Claude Sonnet 5.5(더 빠르고 저렴함), Claude Haiku 5.5(가장 저렴함), Claude Fable 5.1(가장 성능이 뛰어남). Anthropic API 키가 필요합니다(**Settings → Summaries**(설정 → 요약)).
+- 모델:
+  - **내 로그인 사용, API 키 불필요:** "Claude Code · Sonnet / Opus"와 "Codex"는 이 PC에 이미 설치되어 로그인된 Claude Code나 Codex를 통해 여러분의 요금제로 실행됩니다. 해당 도구가 설치되어 있을 때만 나타납니다. 요약은 도구 없이 빈 임시 폴더에서 실행되며, 그 도구의 기록에는 아무것도 저장되지 않습니다.
+  - **Claude API**(**Settings → Secrets**(설정 → 비밀 정보)의 Anthropic API 키): Claude Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.1.
+  - **OpenRouter**(OpenRouter API 키): 자동으로 고르는 무료 모델, Nemotron 3 Ultra, Gemma 4 31B, MiniMax M3.1 Flash(무료), DeepSeek V4 Flash(유료, 매우 저렴). CLI에서는 `--model openrouter:<id>`로 어떤 OpenRouter 모델이든 쓸 수 있습니다.
+- 무엇이든 보내기 전에 ChatRelay는 무엇을 누구에게 보낼지, 어떤 비밀 정보를 찾아 숨겼는지 보여 주고 확인을 요청합니다.
+- 비밀 정보 패턴 외에도, 프로젝트의 `.env` 파일에 있는 값과 **Settings → Never send**(설정 → 절대 보내지 않음) 목록에 있는 모든 것(고객 이름, 내부 호스트 등)이 정확히 일치하는 경우 숨겨집니다.
 - 기록은 먼저 압축됩니다. 여러분의 요청, 각 턴에서 어시스턴트의 최종 답변, 그리고 변경된 파일만 남깁니다. 긴 도구 출력과 사고 과정은 제외됩니다. 모든 도구의 대화가 시간 순서로 합쳐지고, 각 대화에 도구 이름이 표시됩니다.
 - 긴 기록은 약 10만 토큰 단위로 나누어 요약한 다음 합칩니다.
 - 결과에는 다음 섹션이 들어갑니다: 프로젝트 개요, 완료한 일, 주요 결정 사항, 남은 버그 / 알려진 문제, 다음 단계, 수정한 파일.
@@ -290,6 +321,7 @@ Push now(지금 푸시) · Pull now(지금 풀) · Auto-sync on/off(자동 동�
 - **모든 가져오기에 드라이 런이 있습니다.** 무엇이든 실행되기 전에 모든 파일과 모든 경로 변경을 볼 수 있습니다.
 - **충돌이 나면 두 버전을 모두 보관하며**, 절대 덮어쓰지 않습니다.
 - **비밀 정보 검사.** 업로드하기 전에 ChatRelay는 API 키와 비밀번호를 찾습니다. Anthropic, OpenAI, GitHub, AWS, Google, Slack, Stripe 키, JWT, 개인 키, `.env` 스타일의 `SECRET=…` 줄, URL 안의 자격 증명입니다. 다음 중에서 선택할 수 있습니다: **warn**(경고), **redact**(가리기, 업로드되는 사본에서만 `[REDACTED:kind]`로 바뀜), 또는 **off**(끄기).
+- **선택적 종단 간 암호화**(GitHub 저장소). **Settings → Encryption**(설정 → 암호화)에서 비밀번호를 설정하면, 그때부터 모든 파일이 업로드되기 전에 PC에서 암호화됩니다(Argon2id 키, XChaCha20-Poly1305). 그래서 GitHub도, 저장소에 들어온 누구도 알아볼 수 없는 데이터만 보게 됩니다. 모든 PC와 웹 뷰어 또는 휴대폰의 Settings에 같은 비밀번호를 입력하세요. 비밀번호가 없는 PC는 아무것도 읽거나 업로드할 수 없습니다. **비밀번호를 잊어버리면 아무도 기록을 읽을 수 없습니다**. ChatRelay조차 읽을 수 없습니다. **Encrypt files stored before**(이전에 저장한 파일 암호화)는 예전 파일을 암호화해서 다시 업로드합니다. 그다음 **Storage → Remove old versions**(저장 공간 → 이전 버전 제거)로 암호화되지 않은 사본을 저장소 기록에서 삭제합니다.
 - **비밀 정보는 OS 키체인에 보관됩니다.** GitHub 토큰과 Anthropic 키는 절대 파일에 쓰이지 않습니다.
 - **로그인 정보는 절대 건드리지 않습니다.** ChatRelay는 Claude Code나 Codex의 로그인 파일(`~/.claude/.credentials.json`, `~/.codex/auth.json`, …)을 읽거나 복사하거나 바꾸지 않습니다. 기록을 동기화해도 로그아웃되지 않습니다. 로그아웃된다면 도구 자체 때문입니다(예: 세션이 만료되었거나 다른 PC에서 다른 계정으로 로그인한 경우).
 - **비공개 저장소만 사용합니다.** 공개 GitHub 저장소는 거부됩니다.
@@ -304,14 +336,17 @@ Push now(지금 푸시) · Pull now(지금 풀) · Auto-sync on/off(자동 동�
 | This machine (이 컴퓨터) | Machine name (컴퓨터 이름) | 이 PC가 업로드하는 모든 항목 옆에 표시됨 |
 | Sync backend (동기화 백엔드) | Folder / GitHub | 기록이 저장되는 곳. **Test**(테스트)로 연결을 확인 |
 | AI tools (AI 도구) | (상태) | 도구별: 설치 여부, 버전, 감지된 형식, 복원 켜짐/꺼짐, 경고, 대화 수, 컨텍스트 파일 |
-| Automatic sync (자동 동기화) | Auto-sync (자동 동기화) | Claude Code 훅 + 15분마다 백그라운드 동기화 |
+| Automatic sync (자동 동기화) | Auto-sync (자동 동기화) | Claude Code 훅, 채팅이 조용해지고 1분 뒤 Codex 업로드, 15분마다 백그라운드 동기화 |
 | Automatic sync (자동 동기화) | Transcript retention (cleanupPeriodDays) (대화 기록 보관 기간) | Claude Code가 대화를 삭제하기 전까지 보관하는 기간 |
 | What to sync (동기화 대상) | Subagent transcripts (sidecars) (서브에이전트 기록) | Claude Code의 세션별 `subagents/` 및 `tool-results/` 폴더 |
 | What to sync (동기화 대상) | Project memory (프로젝트 메모리) | Claude Code의 프로젝트별 메모리 폴더(`memory/`) |
 | What to sync (동기화 대상) | Secret scan before upload (업로드 전 비밀 정보 검사) | Off / Warn / Auto-redact (끄기 / 경고 / 자동 가리기) |
 | What to sync (동기화 대상) | Versions kept (folder backend) (보관할 버전 수) | 폴더 백엔드가 보관하는 각 파일의 이전 사본 |
-| Secrets (비밀 정보) | GitHub token, Anthropic API key | OS 키체인에 저장됨(**Remove from keychain**(키체인에서 제거)으로 하나씩 삭제) |
+| Encryption (GitHub) (암호화) | Password (비밀번호) | 종단 간 암호화를 켜거나, 이 PC에서 암호화된 기록의 잠금을 해제합니다. **Encrypt files stored before** |
+| Storage (GitHub) (저장 공간) | Remove old versions (이전 버전 제거) | 저장소 크기를 보여 주고, 그 기록에서 이전 버전을 삭제합니다(현재 대화는 모두 유지됨) |
+| Secrets (비밀 정보) | GitHub token, Anthropic API key, OpenRouter API key, GitHub gist token | OS 키체인에 저장됨(**Remove from keychain**(키체인에서 제거)으로 하나씩 삭제) |
 | Summaries (요약) | Default model (기본 모델) | 요약에 사용하는 모델 |
+| Never send (절대 보내지 않음) | List (목록) | 비밀 정보와 `.env` 값 외에, 요약과 공유한 대화에서 숨길 단어와 값 |
 | Appearance (모양) | Theme (테마) | 어둡게 / 밝게 |
 | About (정보) | Version, Check for updates (버전, 업데이트 확인) | |
 
@@ -329,6 +364,9 @@ claude-sync pull [--cwd <dir>] [--project <id>] [--all] [--dry-run]
 claude-sync summarize [--cwd <dir>] [--model <id>] [--target handoff|claude-md|agents-md|gemini-md|none]
 claude-sync remote                        List projects stored in the backend
 claude-sync link <dir> <projectId>        Link a local folder to a remote project ID (--remove to unlink)
+claude-sync search <words…> [--json]      Search every conversation (prompts and answers) on this PC
+claude-sync storage [--compact]           Space used by the GitHub store; --compact removes old versions
+claude-sync exclude [<dir>] [--remove]    Turn sync off (or back on) for a project on this PC; no <dir> lists them
 claude-sync config [key] [value]          Show or set config (machineName, backend.folder, backend.github, secretScan, ...)
 claude-sync secret set github-token|anthropic-api-key <value>
 claude-sync hooks install|uninstall       Add/remove the SessionStart/SessionEnd hooks
@@ -600,14 +638,14 @@ npm run mobile:ios:build
 - Windows 설치 프로그램에 코드 서명이 되어 있지 않습니다(SmartScreen 경고).
 - Windows만 테스트되었습니다. macOS와 Linux는 빌드는 되지만 게시된 설치 프로그램이 없습니다.
 - 두 PC에서 동시에 열려 있는 대화는 실시간으로 병합할 수 없으며, 충돌 사본이 됩니다.
-- Codex에는 "세션 종료" 훅이 없으므로, Codex 동기화는 즉시가 아니라 15분마다 실행됩니다.
+- Codex에는 "세션 종료" 훅이 없으므로, Codex 대화는 끝나는 순간이 아니라 조용해지고 약 1분 뒤에 업로드됩니다.
 - 200자보다 긴 경로의 경우 Claude Code의 정확한 폴더 이름 해시 방식이 문서화되어 있지 않습니다. ChatRelay는 세션에 같은 `cwd`가 기록된 기존 폴더를 우선 사용하고, 그런 폴더가 없으면 자체 `-<hash>` 접미사를 사용합니다.
 - 웹 및 휴대폰 뷰어는 읽기 전용이며 GitHub 백엔드가 필요합니다.
 
 ## 로드맵
 
 - Gemini CLI, Kiro(IDE 및 CLI), Cursor, Antigravity용 어댑터를 하나씩 추가할 예정이며, 각각 먼저 실제 도구로 검증합니다.
-- 코드 서명된 설치 프로그램, macOS 및 Linux 빌드.
+- 코드 서명된 설치 프로그램, 테스트를 거친 macOS 및 Linux 빌드.
 
 ## 이름 변경에 대하여
 

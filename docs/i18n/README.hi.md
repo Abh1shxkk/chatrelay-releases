@@ -79,7 +79,12 @@ ChatRelay आपके computers के बीच AI coding assistants (अभ�
 - **File paths ठीक करता है।** हो सकता है आपका project एक PC पर `C:\Users\me\shop` हो और दूसरे पर `D:\work\shop`, या Linux पर `/home/me/shop`। ChatRelay chat के अंदर का हर path (working folder, tool के inputs और outputs, file links, message का text) बदलकर लेने वाले PC का path कर देता है।
 - **सिर्फ़ बदला हुआ हिस्सा भेजता है।** पहली बार upload होने के बाद, बातचीत की सिर्फ़ नई lines जाती हैं: पूरी file की जगह कुछ KB।
 - **काम कभी नहीं खोता।** Upload करते समय यह आपकी original files को कभी नहीं बदलता। किसी file को बदलने से पहले उसका backup लेता है, पहले preview (dry run) दिखाता है, और ऐसी बातचीत को कभी overwrite नहीं करता जो दोनों PCs पर बदली हो: दोनों को रख लेता है।
-- **अपने आप चलता है।** Auto-sync चालू हो तो Claude Code की बातचीत session ख़त्म होने पर upload होती है और session शुरू होने पर download होती है। Codex की बातचीत background में हर 15 मिनट पर upload और download होती है।
+- **अपने आप चलता है।** Auto-sync चालू हो तो Claude Code की बातचीत session ख़त्म होने पर upload होती है और session शुरू होने पर download होती है। Codex की बातचीत chat शांत होने के लगभग एक मिनट बाद upload होती है, और हर 15 मिनट पर download होती है।
+- **सब कुछ search करता है।** हर project और हर tool में कोई भी prompt या जवाब, एक second से भी कम में ढूँढें।
+- **दूसरे tool में आगे बढ़ाता है।** Codex की बातचीत को Claude Code की बातचीत में बदलें, या उल्टा, और पूरी history के साथ काम जारी रखें।
+- **एक बातचीत share करता है** Markdown, PDF या एक secret link के रूप में, secrets छिपाकर।
+- **सब कुछ encrypt कर सकता है** एक password से, ताकि GitHub पर सिर्फ़ उलझा हुआ (scrambled) data ही रहे।
+- **आपका usage दिखाता है:** हर दिन की बातचीत, सबसे ज़्यादा इस्तेमाल होने वाले projects और tools।
 - **Summary बनाता है।** यह किसी project की पूरी history (हर tool की) को एक `HANDOFF.md` में बदल देता है: क्या हो चुका है, कौन-से फ़ैसले लिए गए, कौन-से bugs बाक़ी हैं, आगे क्या करना है, किन files को छुआ गया। यह एक छोटा version `CLAUDE.md`, `AGENTS.md` या `GEMINI.md` में भी डाल सकता है, ताकि अगला tool पूरे context के साथ शुरू हो।
 - **कहीं भी पढ़ें।** एक read-only web page और एक Android app आपकी GitHub storage से आपकी सारी बातचीत किसी भी device पर दिखाते हैं।
 - **VS Code जैसा दिखता है।** Black-and-white, VS Code जैसा desktop app, dark और light themes के साथ, रोज़ के काम के लिए एक simple view और हर detail वाला एक advanced view।
@@ -113,7 +118,7 @@ App हर user के लिए अलग `%LOCALAPPDATA%\Claude Sync\` मे�
 
 ### macOS और Linux
 
-Rust engine और app macOS और Linux पर build हो जाते हैं (देखें [Source से build करना](#source-से-build-करना-और-development)), लेकिन उनके लिए अभी कोई installer publish नहीं हुआ है और उन्हें test नहीं किया गया है।
+एक GitHub Actions workflow (`.github/workflows/desktop-mac-linux.yml`) macOS (Apple silicon) के लिए `.dmg` और Linux के लिए `.AppImage` और `.deb` build करता है, और उन्हें उनकी update entries के साथ किसी release में जोड़ सकता है। ये code-signed नहीं हैं (macOS: पहली बार right-click → **Open**) और इनकी testing बहुत कम हुई है।
 
 ### Web
 
@@ -182,7 +187,7 @@ Codex के लिए: **पहले Codex बंद करें** (CLI, VS C
 
 ### Simple view और Advanced view
 
-- **Simple view** (default): status dot के साथ आपके projects, दो बड़े buttons (**Upload now** / **Bring history to this PC**), auto-sync switch और update check।
+- **Simple view** (default), sections में: आपकी history का status; **Sync** (**Upload now**, **Bring history to this PC**, auto-sync switch); **Projects on this PC**, filters (upload करने हैं, upload नहीं हुए, backup हुए, sync off) के साथ, एक search box और हर project आख़िरी बार कब इस्तेमाल हुआ; और **Help**।
 - **Advanced view**: VS Code जैसा layout, जिसमें activity bar (Projects **Ctrl+Shift+E**, Sync **Ctrl+Shift+Y**, Summaries, Logs, Backups, Settings), tabs, status bar और हर action वाला command palette (**Ctrl+Shift+P**) है।
 
 दोनों के बीच **Ctrl+Shift+P → Switch to Simple/Advanced View** से बदलें।
@@ -196,10 +201,31 @@ Codex के लिए: **पहले Codex बंद करें** (CLI, VS C
 | लाल | पिछला sync fail हुआ | वजह के लिए **Logs** खोलें |
 | स्लेटी (grey) | कभी sync नहीं हुआ | एक बार Push करें |
 | खोखला गोला | अभी कोई project identity नहीं (link नहीं है) | Push करें (link बन जाएगा) या दूसरे PC वाले project से **Link** करें |
+| कटा हुआ गोला | इस PC पर इस project का sync बंद है | अगर फिर से sync करना हो, तो project के page पर **Turn sync on** (sync चालू करें) करें |
 
 ### कई tools की बातचीत
 
 हर बातचीत पर उसके tool का एक छोटा badge होता है (**Claude** या **Codex**)। जिन projects में आपने एक से ज़्यादा tool इस्तेमाल किए, उनमें एक **filter** दिखता है (All / Claude Code / Codex)। बातचीत खोलने पर पूरा transcript दिखता है: आपके messages, assistant के जवाब, tool calls (चलाए गए commands, edit की गई files) और बदली गई files की list।
+
+### हर बातचीत में search करें
+
+Activity bar में **Search** खोलें (**Ctrl+Shift+F**) और कुछ शब्द लिखें। ChatRelay हर project और हर tool (Claude Code और Codex) में आपका लिखा हर prompt और assistant का दिया हर जवाब ढूँढ लेता है जिसमें ये सारे शब्द हों। नतीजे सबसे नए पहले, बातचीत के हिसाब से group होकर दिखते हैं, और शब्द highlight रहते हैं। किसी match पर click करें, तो वह बातचीत खुल जाती है और शब्द पहले से उसके find box में होते हैं। Tool output (file का content, command output) में search नहीं होता। पहली search आपकी history एक बार पढ़ती है (लगभग 2 GB के लिए एक second से कम); उसके बाद नतीजे तुरंत आते हैं। Command line से: `claude-sync search <words>`।
+
+### Project को सिर्फ़ इसी PC पर रखें
+
+कुछ projects कभी PC से बाहर नहीं जाने चाहिए, जैसे office की machine पर client का काम। Project के page पर **Don't sync** पर click करें (या Simple view में किसी project पर mouse ले जाकर **don't sync** पर click करें)। इसके बाद उस project का कुछ भी upload नहीं होता, और वह अपने आप download भी नहीं होता (auto-sync hooks, background sync, "Upload everything")। Manual **Pull** फिर भी काम करता है। Project पर कटा हुआ status dot और "sync off on this PC" दिखता है; **Turn sync on** से यह वापस हो जाता है। Command line से: `claude-sync exclude <dir>` (वापस करने के लिए `--remove`; folder न दें तो list दिखती है)।
+
+### बातचीत को दूसरे tool में जारी रखें
+
+कोई बातचीत खोलें और **Continue in Claude Code** (Codex की बातचीत पर) या **Continue in Codex** (Claude Code की बातचीत पर) पर click करें। ChatRelay उस tool में उसी project में एक नई बातचीत जोड़ देता है, हर prompt और जवाब के साथ; tool calls और बदली गई files छोटे notes के रूप में दिखती हैं, क्योंकि दोनों tools इन्हें अलग-अलग तरह से record करते हैं। फिर project खोलें और `claude --resume` या `codex resume` चलाएँ (या VS Code panel में उसे चुनें)। Original बातचीत नहीं बदलती, और जब तक target tool चल रहा हो, कुछ भी नहीं लिखा जाता।
+
+### बातचीत share करें
+
+कोई बातचीत खोलें और **Share** पर click करें: उसे Markdown के रूप में copy करें, एक `.md` file save करें, **Save as PDF** (print dialog का "Save as PDF"), या **Create link**, यानी एक secret GitHub Gist जिसे link वाला कोई भी पढ़ सकता है। Prompts और जवाब शामिल होते हैं (tool calls तभी जब आप tick करें; thinking और tool output कभी नहीं), और keys, passwords, project की `.env` values और आपकी "never send" list पहले ही छिपा दी जाती हैं। Link के लिए `gist` scope वाला GitHub token चाहिए: अगर आपने GitHub CLI में login किया है तो वही इस्तेमाल होता है, वरना **Settings → Secrets → GitHub gist token** में एक जोड़ें।
+
+### Usage
+
+Activity bar में **Usage** पिछले 7, 30 या 90 दिनों के लिए दिखाता है: बातचीत, messages, projects और active दिन, हर दिन की बातचीत, और आपने कौन-से projects और tools सबसे ज़्यादा इस्तेमाल किए। यह इसी PC पर गिना जाता है; कुछ भी भेजा नहीं जाता।
 
 ### Push और pull
 
@@ -211,7 +237,7 @@ Codex के लिए: **पहले Codex बंद करें** (CLI, VS C
 जब **Auto-sync** चालू हो:
 
 - **Claude Code**: `~/.claude/settings.json` में लगे hooks, Claude Code session **शुरू** होने पर (pull) और **ख़त्म** होने पर (push) ChatRelay चलाते हैं।
-- **Codex**: Codex में ऐसा कोई hook नहीं है, इसलिए desktop app हर 15 मिनट पर जाँच करता है (app खुलने के 20 सेकंड बाद से)। यह उन projects को upload करता है जिनकी Codex बातचीत बदली है और नई बातचीत download करता है (Codex चलते समय यह छोड़ दिया जाता है)।
+- **Codex**: Codex में ऐसा कोई hook नहीं है। Desktop app Codex के sessions पर नज़र रखता है और बदली हुई बातचीत को उसके शांत होने के लगभग एक मिनट बाद upload करता है। साथ ही हर 15 मिनट पर (app खुलने के 20 सेकंड बाद से) यह नई बातचीत download करता है (Codex चलते समय यह छोड़ दिया जाता है)।
 - जो uploads offline होने की वजह से fail हुए, वे queue में रखे जाते हैं और फिर से कोशिश की जाती है।
 
 Auto-sync को आप Settings में, tray menu में, या `claude-sync hooks install|uninstall` से चालू या बंद कर सकते हैं।
@@ -257,7 +283,12 @@ Push now · Pull now · Auto-sync on/off · Last sync status · Open · Quit (�
 
 **Summaries** खोलें (Advanced view), एक project चुनें, बातचीत (किसी भी tool की) और एक model पर tick करें, फिर **Generate handoff** (handoff बनाएँ) पर click करें।
 
-- Models: **Claude Opus 5.5** (default), Claude Sonnet 5.5 (तेज़, सस्ता), Claude Haiku 5.5 (सबसे सस्ता), Claude Fable 5.1 (सबसे ज़्यादा capable)। आपको एक Anthropic API key चाहिए (**Settings → Summaries**)।
+- Models:
+  - **आपके अपने login, API key नहीं चाहिए:** "Claude Code · Sonnet / Opus" और "Codex" इस PC पर पहले से install और signed in Claude Code या Codex से, आपके अपने plan पर चलते हैं। ये सिर्फ़ तब दिखते हैं जब वह tool install हो। Summary एक ख़ाली temporary folder में, बिना किसी tool के चलती है, और उस tool की history में कुछ save नहीं होता।
+  - **Claude API** (**Settings → Secrets** में Anthropic API key): Claude Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.1।
+  - **OpenRouter** (OpenRouter API key): एक automatic free model, Nemotron 3 Ultra, Gemma 4 31B और MiniMax M3.1 Flash (free), DeepSeek V4 Flash (paid, बहुत सस्ता)। CLI से कोई भी OpenRouter model `--model openrouter:<id>` के साथ चलता है।
+- कुछ भी भेजने से पहले ChatRelay दिखाता है कि क्या भेजा जाएगा और किसे, कौन-से secrets मिले और छुपाए गए, और आपसे confirm करने को कहता है।
+- Secret patterns के अलावा, project की `.env` files की values और आपकी **Settings → Never send** list की हर चीज़ (client के नाम, internal hosts, …) exact match से छिपा दी जाती है।
 - पहले history छोटी की जाती है: आपकी requests, हर turn में assistant का आख़िरी जवाब, और बदली गई files। लंबा tool output और thinking हटा दिए जाते हैं। सभी tools की बातचीत समय के क्रम में मिला दी जाती है और हर एक पर उसके tool का label लगता है।
 - लंबी histories का summary लगभग 100k-token के हिस्सों में बनता है और फिर उन्हें मिला दिया जाता है।
 - नतीजे में ये sections होते हैं: Project overview, What's done, Key decisions, Open bugs / known issues, Next steps, Files touched (project का परिचय, क्या हो चुका है, मुख्य फ़ैसले, बाक़ी bugs / मालूम दिक्कतें, अगले steps, छुई गई files)।
@@ -290,6 +321,7 @@ App का एक read-only version जो आपके **GitHub** backend क�
 - **हर import के लिए dry run।** कुछ भी होने से पहले आप हर file और हर path का बदलाव देख लेते हैं।
 - **Conflict पर दोनों versions रखे जाते हैं**, कभी overwrite नहीं होते।
 - **Secret scan।** Upload से पहले ChatRelay API keys और passwords ढूँढता है: Anthropic, OpenAI, GitHub, AWS, Google, Slack और Stripe keys, JWTs, private keys, `.env` जैसी `SECRET=…` lines, और URLs के अंदर के credentials। आप चुनते हैं: **warn** (चेतावनी), **redact** (सिर्फ़ upload होने वाली copy में `[REDACTED:kind]` से बदल देना), या **off** (बंद)।
+- **Optional end-to-end encryption** (GitHub storage)। **Settings → Encryption** में एक password set करें: उसके बाद हर file upload होने से पहले आपके PC पर ही encrypt होती है (Argon2id key, XChaCha20-Poly1305), इसलिए GitHub और repository तक पहुँचने वाले किसी भी व्यक्ति को सिर्फ़ उलझा हुआ (scrambled) data दिखता है। हर PC पर, और web viewer या phone की Settings में भी, वही password डालें। जिस PC के पास password नहीं है वह न कुछ पढ़ सकता है न upload कर सकता है। **अगर आप password भूल गए, तो कोई भी history नहीं पढ़ सकता**, ChatRelay भी नहीं। **Encrypt files stored before** पुरानी files को encrypt करके फिर से upload करता है; फिर **Storage → Remove old versions** repository की history से बिना encryption वाली copies delete कर देता है।
 - **Secrets OS keychain में रहते हैं।** आपका GitHub token और Anthropic key कभी किसी file में नहीं लिखे जाते।
 - **आपके logins को कभी छुआ नहीं जाता।** ChatRelay, Claude Code या Codex की login files (`~/.claude/.credentials.json`, `~/.codex/auth.json`, …) को न पढ़ता है, न copy करता है, न बदलता है। History sync करने से आप log out नहीं हो सकते। अगर आप log out होते हैं, तो वह tool की अपनी वजह से होता है (जैसे session expire होना या किसी दूसरे PC पर दूसरे account से sign in करना)।
 - **सिर्फ़ private storage।** Public GitHub repositories मना कर दी जाती हैं।
@@ -304,14 +336,17 @@ App का एक read-only version जो आपके **GitHub** backend क�
 | This machine | Machine name | इस PC से upload होने वाली हर चीज़ के साथ दिखता है |
 | Sync backend | Folder / GitHub | History कहाँ रखी जाती है; **Test** connection जाँचता है |
 | AI tools | (status) | हर tool: installed है या नहीं, version, पहचाना गया format, restore चालू/बंद, warnings, बातचीत की गिनती, context file |
-| Automatic sync | Auto-sync | Claude Code hooks + 15 मिनट वाला background sync |
+| Automatic sync | Auto-sync | Claude Code hooks, chat शांत होने के एक मिनट बाद Codex upload, 15 मिनट वाला background sync |
 | Automatic sync | Transcript retention (cleanupPeriodDays) | Claude Code बातचीत को delete करने से पहले कितने दिन रखता है |
 | What to sync | Subagent transcripts (sidecars) | Claude Code के हर session के `subagents/` और `tool-results/` folders |
 | What to sync | Project memory | Claude Code का हर project वाला memory folder (`memory/`) |
 | What to sync | Secret scan before upload | Off / Warn / Auto-redact |
 | What to sync | Versions kept (folder backend) | Folder backend हर file की कितनी पुरानी copies रखता है |
-| Secrets | GitHub token, Anthropic API key | OS keychain में रखे जाते हैं (**Remove from keychain** किसी एक को delete करता है) |
+| Encryption (GitHub) | Password | End-to-end encryption चालू करता है, या इस PC पर encrypted history को unlock करता है; **Encrypt files stored before** |
+| Storage (GitHub) | Remove old versions | Repository का size दिखाता है और उसकी history से पुराने versions delete करता है (हर मौजूदा बातचीत बनी रहती है) |
+| Secrets | GitHub token, Anthropic API key, OpenRouter API key, GitHub gist token | OS keychain में रखे जाते हैं (**Remove from keychain** किसी एक को delete करता है) |
 | Summaries | Default model | Summaries के लिए इस्तेमाल होने वाला model |
+| Never send | List | Secrets और `.env` values के अलावा, summaries और share की गई बातचीत से छिपाए जाने वाले शब्द और values |
 | Appearance | Theme | Dark / light |
 | About | Version, Check for updates | |
 
@@ -329,6 +364,9 @@ claude-sync pull [--cwd <dir>] [--project <id>] [--all] [--dry-run]
 claude-sync summarize [--cwd <dir>] [--model <id>] [--target handoff|claude-md|agents-md|gemini-md|none]
 claude-sync remote                        List projects stored in the backend
 claude-sync link <dir> <projectId>        Link a local folder to a remote project ID (--remove to unlink)
+claude-sync search <words…> [--json]      Search every conversation (prompts and answers) on this PC
+claude-sync storage [--compact]           Space used by the GitHub store; --compact removes old versions
+claude-sync exclude [<dir>] [--remove]    Turn sync off (or back on) for a project on this PC; no <dir> lists them
 claude-sync config [key] [value]          Show or set config (machineName, backend.folder, backend.github, secretScan, ...)
 claude-sync secret set github-token|anthropic-api-key <value>
 claude-sync hooks install|uninstall       Add/remove the SessionStart/SessionEnd hooks
@@ -645,14 +683,14 @@ Updater key का backup रखें। Apps सिर्फ़ उसी key 
 - Windows installer code-signed नहीं है (SmartScreen warning)।
 - सिर्फ़ Windows पर test हुआ है। macOS और Linux पर build होता है लेकिन उनके installers publish नहीं हुए हैं।
 - एक ही समय पर दो PCs पर खुली बातचीत को live merge नहीं किया जा सकता; वह conflict copy बन जाती है।
-- Codex में "session ended" hook नहीं है, इसलिए Codex sync तुरंत नहीं, हर 15 मिनट पर चलता है।
+- Codex में "session ended" hook नहीं है, इसलिए Codex की बातचीत ख़त्म होते ही नहीं, बल्कि शांत होने के लगभग एक मिनट बाद upload होती है।
 - 200 characters से लंबे paths के लिए Claude Code का सही folder-name hash documented नहीं है; ChatRelay पहले ऐसे मौजूदा folder को चुनता है जिसके sessions में वही `cwd` दर्ज हो, वरना अपना `-<hash>` suffix इस्तेमाल करता है।
 - Web और phone viewers read-only हैं और उन्हें GitHub backend चाहिए।
 
 ## आगे की योजना (Roadmap)
 
 - Gemini CLI, Kiro (IDE और CLI), Cursor और Antigravity के adapters, एक-एक करके, हर एक को पहले असली tool पर जाँचकर।
-- Code-signed installers; macOS और Linux builds।
+- Code-signed installers; test किए हुए macOS और Linux builds।
 
 ## नाम बदलने के बारे में
 

@@ -79,7 +79,12 @@ ChatRelay synchronise l'historique des conversations des assistants de code IA (
 - **Corrige les chemins de fichiers.** Votre projet peut se trouver dans `C:\Users\me\shop` sur un PC et dans `D:\work\shop` sur un autre, ou dans `/home/me/shop` sous Linux. ChatRelay réécrit chaque chemin présent dans la conversation (dossier de travail, entrées et sorties des outils, liens vers des fichiers, texte des messages) pour qu'il corresponde au chemin sur le PC qui reçoit.
 - **N'envoie que ce qui a changé.** Après le premier envoi, seules les nouvelles lignes d'une conversation sont transférées : quelques Ko au lieu du fichier entier.
 - **Ne perd jamais votre travail.** Il ne modifie jamais vos originaux lors de l'envoi. Il sauvegarde chaque fichier avant de le modifier, montre d'abord un aperçu (simulation, « dry run »), et n'écrase jamais une conversation qui a changé sur les deux PC : il garde les deux.
-- **Fonctionne tout seul.** Avec la synchronisation automatique activée, les conversations Claude Code sont envoyées à la fin d'une session et téléchargées au début d'une session. Les conversations Codex sont envoyées et téléchargées toutes les 15 minutes en arrière-plan.
+- **Fonctionne tout seul.** Avec la synchronisation automatique activée, les conversations Claude Code sont envoyées à la fin d'une session et téléchargées au début d'une session. Les conversations Codex sont envoyées environ une minute après qu'une discussion est devenue calme, et téléchargées toutes les 15 minutes.
+- **Cherche partout.** Retrouvez n'importe quel prompt ou réponse dans tous les projets et tous les outils, en moins d'une seconde.
+- **Continue dans l'autre outil.** Transformez une conversation Codex en conversation Claude Code, ou l'inverse, et continuez avec tout l'historique.
+- **Partage une conversation** en Markdown, en PDF ou par un lien secret, avec les secrets masqués.
+- **Peut tout chiffrer** avec un mot de passe, pour que GitHub ne stocke jamais que des données illisibles.
+- **Montre votre utilisation :** conversations par jour, projets et outils les plus actifs.
 - **Résume.** Il transforme tout l'historique d'un projet (de tous les outils) en un fichier `HANDOFF.md` : ce qui est fait, les décisions, les bugs ouverts, les prochaines étapes, les fichiers modifiés. Il peut aussi placer une version courte dans `CLAUDE.md`, `AGENTS.md` ou `GEMINI.md`, pour que l'outil suivant démarre avec le contexte.
 - **Lisible partout.** Une page web en lecture seule et une application Android affichent toutes vos conversations depuis le stockage GitHub, sur n'importe quel appareil.
 - **Ressemble à VS Code.** Application de bureau en noir et blanc, dans le style de VS Code, avec des thèmes sombre et clair, une vue simple pour l'usage quotidien et une vue avancée avec tous les détails.
@@ -113,7 +118,7 @@ Téléchargez `ChatRelay_<version>.apk` depuis la même page de versions et ouvr
 
 ### macOS et Linux
 
-Le moteur Rust et l'application se compilent sous macOS et Linux (voir [Compilation depuis les sources](#compilation-depuis-les-sources-et-développement)), mais aucun installateur n'est encore publié pour eux et ils n'ont pas été testés.
+Un workflow GitHub Actions (`.github/workflows/desktop-mac-linux.yml`) produit un `.dmg` pour macOS (Apple silicon) ainsi qu'un `.AppImage` et un `.deb` pour Linux, et peut les ajouter, avec leurs entrées de mise à jour, à une release. Ils ne sont pas signés numériquement (macOS : clic droit → **Open** (Ouvrir) la première fois) et ont été peu testés.
 
 ### Web
 
@@ -182,7 +187,7 @@ Activez **Auto-sync** (Synchronisation automatique) sur les deux PC et vous n'au
 
 ### Vue simple et vue avancée
 
-- **Simple view** (Vue simple, par défaut) : vos projets avec un point d'état, deux grands boutons (**Upload now** / **Bring history to this PC**), l'interrupteur de synchronisation automatique et la vérification des mises à jour.
+- **Simple view** (Vue simple, par défaut), en sections : l'état de votre historique ; **Sync** (Synchronisation : **Upload now**, **Bring history to this PC**, l'interrupteur de synchronisation automatique) ; **Projects on this PC** (Projets sur ce PC), avec des filtres (à envoyer, non envoyés, sauvegardés, synchronisation désactivée), une zone de recherche et la date de dernière utilisation de chacun ; et **Help** (Aide).
 - **Advanced view** (Vue avancée) : une disposition proche de VS Code avec une barre d'activité (Projects **Ctrl+Shift+E**, Sync **Ctrl+Shift+Y**, Summaries, Logs, Backups, Settings — c'est-à-dire Projets, Synchronisation, Résumés, Journaux, Sauvegardes, Paramètres), des onglets, une barre d'état et une palette de commandes (**Ctrl+Shift+P**) qui contient toutes les actions.
 
 Passez de l'une à l'autre avec **Ctrl+Shift+P → Switch to Simple/Advanced View** (Passer à la vue simple/avancée).
@@ -196,10 +201,31 @@ Passez de l'une à l'autre avec **Ctrl+Shift+P → Switch to Simple/Advanced Vie
 | Rouge | La dernière synchronisation a échoué | Ouvrez **Logs** (Journaux) pour voir la raison |
 | Gris | Jamais synchronisé | Faites un Push une fois |
 | Cercle vide | Pas encore d'identité de projet (non lié) | Faites un Push (un lien est créé) ou utilisez **Link** pour le lier au projet venant de l'autre PC |
+| Cercle barré | La synchronisation est désactivée pour ce projet sur ce PC | **Turn sync on** (Réactiver la synchronisation) sur la page du projet, si vous voulez qu'il soit de nouveau synchronisé |
 
 ### Conversations de plusieurs outils
 
 Chaque conversation porte un petit badge indiquant son outil (**Claude** ou **Codex**). Les projets dans lesquels vous avez utilisé plus d'un outil affichent un **filtre** (All / Claude Code / Codex, c'est-à-dire Tous / Claude Code / Codex). Ouvrir une conversation affiche la transcription complète : vos messages, les réponses de l'assistant, les appels d'outils (commandes exécutées, fichiers modifiés) et la liste des fichiers modifiés.
+
+### Rechercher dans toutes les conversations
+
+Ouvrez **Search** (Recherche) dans la barre d'activité (**Ctrl+Shift+F**) et tapez quelques mots. ChatRelay trouve chaque prompt que vous avez écrit et chaque réponse de l'assistant qui contient tous ces mots, dans tous les projets et tous les outils (Claude Code et Codex), du plus récent au plus ancien, regroupés par conversation, avec les mots surlignés. Cliquez sur un résultat pour ouvrir cette conversation avec les mots déjà dans sa zone de recherche. La sortie des outils (contenu des fichiers, sortie des commandes) n'est pas prise en compte. La première recherche lit votre historique une fois (moins d'une seconde pour environ 2 Go) ; ensuite, les résultats sont instantanés. En ligne de commande : `claude-sync search <words>`.
+
+### Garder un projet uniquement sur ce PC
+
+Certains projets ne doivent jamais quitter un PC, par exemple un travail pour un client sur une machine du bureau. Sur la page du projet, cliquez sur **Don't sync** (Ne pas synchroniser) (ou survolez un projet dans la vue simple et cliquez sur **don't sync**). À partir de là, rien de ce projet n'est envoyé, et il n'est pas non plus téléchargé automatiquement (hooks de synchronisation automatique, synchronisation en arrière-plan, « Upload everything »). Un **Pull** manuel fonctionne toujours. Le projet affiche un point d'état barré et « sync off on this PC » (synchronisation désactivée sur ce PC) ; **Turn sync on** annule cela. En ligne de commande : `claude-sync exclude <dir>` (`--remove` pour annuler ; sans dossier, affiche la liste).
+
+### Continuer une conversation dans l'autre outil
+
+Ouvrez une conversation et cliquez sur **Continue in Claude Code** (Continuer dans Claude Code, sur une conversation Codex) ou **Continue in Codex** (Continuer dans Codex, sur une conversation Claude Code). ChatRelay ajoute une nouvelle conversation à cet outil dans le même projet, avec chaque prompt et chaque réponse ; les appels d'outils et les fichiers modifiés apparaissent sous forme de courtes notes, car les deux outils les enregistrent différemment. Ouvrez ensuite le projet et lancez `claude --resume` ou `codex resume` (ou choisissez-la dans le panneau VS Code). La conversation d'origine n'est pas modifiée, et rien n'est écrit tant que l'outil cible tourne.
+
+### Partager une conversation
+
+Ouvrez une conversation et cliquez sur **Share** (Partager) : copiez-la en Markdown, enregistrez un fichier `.md`, **Save as PDF** (Enregistrer en PDF, via « Enregistrer au format PDF » de la boîte d'impression) ou **Create link** (Créer un lien), un GitHub Gist secret que toute personne ayant le lien peut lire. Les prompts et les réponses sont inclus (les appels d'outils si vous cochez la case ; le raisonnement et la sortie des outils, jamais), et les clés, les mots de passe, les valeurs du `.env` du projet et votre liste « never send » (ne jamais envoyer) sont d'abord masqués. Un lien nécessite un jeton GitHub avec la portée `gist` : la connexion de GitHub CLI est utilisée si vous en avez une, sinon ajoutez-en un dans **Settings → Secrets → GitHub gist token** (Paramètres → Secrets → jeton GitHub Gist).
+
+### Utilisation
+
+**Usage** (Utilisation) dans la barre d'activité affiche, pour les 7, 30 ou 90 derniers jours : conversations, messages, projets et jours actifs, conversations par jour, et les projets et outils que vous avez le plus utilisés. Le calcul se fait sur ce PC ; rien n'est envoyé.
 
 ### Push et pull (envoyer et récupérer)
 
@@ -211,7 +237,7 @@ Chaque conversation porte un petit badge indiquant son outil (**Claude** ou **Co
 Quand **Auto-sync** est activé :
 
 - **Claude Code** : des hooks dans `~/.claude/settings.json` lancent ChatRelay quand une session Claude Code **commence** (pull) et **se termine** (push).
-- **Codex** : Codex n'a pas ce genre de hook, donc l'application de bureau vérifie toutes les 15 minutes (en commençant 20 secondes après le lancement). Elle envoie les projets dont les conversations Codex ont changé et télécharge les nouvelles (rien n'est fait tant que Codex tourne).
+- **Codex** : Codex n'a pas ce genre de hook. L'application de bureau surveille les sessions de Codex et envoie une conversation modifiée environ une minute après qu'elle est devenue calme. Toutes les 15 minutes (en commençant 20 secondes après le lancement), elle télécharge aussi les nouvelles (rien n'est fait tant que Codex tourne).
 - Les envois qui ont échoué parce que vous étiez hors ligne sont mis en file d'attente et réessayés.
 
 Vous pouvez activer ou désactiver la synchronisation automatique dans les paramètres, dans le menu de la zone de notification, ou avec `claude-sync hooks install|uninstall`.
@@ -257,7 +283,12 @@ Les détails qui comptent :
 
 Ouvrez **Summaries** (Résumés) dans la vue avancée, choisissez un projet, cochez les conversations (de n'importe quel outil) et un modèle, puis cliquez sur **Generate handoff** (Générer le document de passation).
 
-- Modèles : **Claude Opus 5.5** (par défaut), Claude Sonnet 5.5 (plus rapide, moins cher), Claude Haiku 5.5 (le moins cher), Claude Fable 5.1 (le plus performant). Il vous faut une clé API Anthropic (**Settings → Summaries**, Paramètres → Résumés).
+- Modèles :
+  - **Vos comptes, sans clé API :** « Claude Code · Sonnet / Opus » et « Codex » passent par le Claude Code ou le Codex déjà installé et connecté sur ce PC, avec votre propre abonnement. Ils n'apparaissent que si cet outil est installé. Le résumé est généré dans un dossier temporaire vide, sans outils, et rien n'est enregistré dans l'historique de cet outil.
+  - **Claude API** (clé API Anthropic dans **Settings → Secrets**, Paramètres → Secrets) : Claude Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.1.
+  - **OpenRouter** (clé API OpenRouter) : un modèle gratuit automatique, Nemotron 3 Ultra, Gemma 4 31B et MiniMax M3.1 Flash (gratuits), DeepSeek V4 Flash (payant, très bon marché). N'importe quel modèle OpenRouter fonctionne depuis la CLI avec `--model openrouter:<id>`.
+- Avant tout envoi, ChatRelay montre ce qui sera envoyé et à qui, quels secrets il a trouvés et masqués, et vous demande de confirmer.
+- En plus des motifs de secrets, les valeurs des fichiers `.env` du projet et tout ce qui figure dans votre liste **Settings → Never send** (Paramètres → Ne jamais envoyer : noms de clients, hôtes internes, …) sont masqués par correspondance exacte.
 - L'historique est d'abord condensé : vos demandes, la réponse finale de l'assistant à chaque tour, et les fichiers modifiés. Les longues sorties d'outils et le raisonnement interne sont retirés. Les conversations de tous les outils sont fusionnées par ordre chronologique et étiquetées avec leur outil.
 - Les longs historiques sont résumés par morceaux d'environ 100k tokens, puis fusionnés.
 - Le résultat contient ces sections : Project overview, What's done, Key decisions, Open bugs / known issues, Next steps, Files touched (Vue d'ensemble du projet, Ce qui est fait, Décisions clés, Bugs ouverts / problèmes connus, Prochaines étapes, Fichiers modifiés).
@@ -290,6 +321,7 @@ Une version en lecture seule de l'application, qui ouvre l'historique stocké da
 - **Une simulation (dry run) pour chaque import.** Vous voyez chaque fichier et chaque réécriture de chemin avant que quoi que ce soit ne se produise.
 - **Les deux versions sont conservées en cas de conflit**, rien n'est jamais écrasé.
 - **Recherche de secrets.** Avant l'envoi, ChatRelay cherche des clés API et des mots de passe : clés Anthropic, OpenAI, GitHub, AWS, Google, Slack et Stripe, JWT, clés privées, lignes du type `.env` comme `SECRET=…`, et identifiants contenus dans des URL. Vous choisissez : **warn** (avertir), **redact** (caviarder : remplacé par `[REDACTED:kind]` uniquement dans la copie envoyée) ou **off** (désactivé).
+- **Chiffrement de bout en bout facultatif** (stockage GitHub). Dans **Settings → Encryption** (Paramètres → Chiffrement), définissez un mot de passe : dès lors, chaque fichier est chiffré sur votre PC (clé Argon2id, XChaCha20-Poly1305) avant d'être envoyé, si bien que GitHub et quiconque accède au dépôt ne voient que des données illisibles. Saisissez le même mot de passe sur chaque PC, ainsi que dans les paramètres du visualiseur web ou du téléphone. Un PC qui ne l'a pas ne peut rien lire ni envoyer. **Si vous oubliez le mot de passe, personne ne peut lire l'historique**, pas même ChatRelay. **Encrypt files stored before** (Chiffrer les fichiers stockés auparavant) renvoie les anciens fichiers chiffrés ; ensuite, **Storage → Remove old versions** (Stockage → Supprimer les anciennes versions) efface les copies non chiffrées de l'historique du dépôt.
 - **Les secrets restent dans le trousseau du système.** Votre jeton GitHub et votre clé Anthropic ne sont jamais écrits dans un fichier.
 - **Vos connexions ne sont jamais touchées.** ChatRelay ne lit, ne copie et ne modifie pas les fichiers de connexion de Claude Code ou de Codex (`~/.claude/.credentials.json`, `~/.codex/auth.json`, …). Synchroniser l'historique ne peut pas vous déconnecter. Si vous êtes déconnecté, cela vient de l'outil lui-même (par exemple une session expirée, ou une connexion avec un autre compte sur un autre PC).
 - **Stockage privé uniquement.** Les dépôts GitHub publics sont refusés.
@@ -304,14 +336,17 @@ Volontairement non synchronisés : `~/.claude/history.jsonl` (l'historique des i
 | This machine (Cette machine) | Machine name (Nom de la machine) | Affiché à côté de tout ce que ce PC envoie |
 | Sync backend (Backend de synchronisation) | Folder / GitHub (Dossier / GitHub) | Où l'historique est stocké ; **Test** vérifie la connexion |
 | AI tools (Outils IA) | (état) | Pour chaque outil : installé ou non, version, format détecté, restauration activée/désactivée, avertissements, nombre de conversations, fichier de contexte |
-| Automatic sync (Synchronisation automatique) | Auto-sync | Hooks Claude Code + synchronisation en arrière-plan toutes les 15 minutes |
+| Automatic sync (Synchronisation automatique) | Auto-sync | Hooks Claude Code, envoi Codex une minute après qu'une discussion est devenue calme, synchronisation en arrière-plan toutes les 15 minutes |
 | Automatic sync (Synchronisation automatique) | Transcript retention (cleanupPeriodDays) (Conservation des transcriptions) | Combien de temps Claude Code garde les conversations avant de les supprimer |
 | What to sync (Quoi synchroniser) | Subagent transcripts (sidecars) (Transcriptions des sous-agents) | Les dossiers `subagents/` et `tool-results/` propres à chaque session Claude Code |
 | What to sync (Quoi synchroniser) | Project memory (Mémoire du projet) | Le dossier de mémoire propre à chaque projet de Claude Code (`memory/`) |
 | What to sync (Quoi synchroniser) | Secret scan before upload (Recherche de secrets avant envoi) | Off / Warn / Auto-redact (Désactivé / Avertir / Caviarder automatiquement) |
 | What to sync (Quoi synchroniser) | Versions kept (folder backend) (Versions conservées, backend dossier) | Copies précédentes de chaque fichier conservées par le backend dossier |
-| Secrets | GitHub token, Anthropic API key (Jeton GitHub, clé API Anthropic) | Stockés dans le trousseau du système (**Remove from keychain** (Retirer du trousseau) en supprime un) |
+| Encryption (GitHub) (Chiffrement (GitHub)) | Password (Mot de passe) | Active le chiffrement de bout en bout, ou déverrouille un historique chiffré sur ce PC ; **Encrypt files stored before** |
+| Storage (GitHub) (Stockage (GitHub)) | Remove old versions (Supprimer les anciennes versions) | Affiche la taille du dépôt et supprime les anciennes versions de son historique (toutes les conversations actuelles sont conservées) |
+| Secrets | GitHub token, Anthropic API key, OpenRouter API key, GitHub gist token (Jeton GitHub, clé API Anthropic, clé API OpenRouter, jeton GitHub Gist) | Stockés dans le trousseau du système (**Remove from keychain** (Retirer du trousseau) en supprime un) |
 | Summaries (Résumés) | Default model (Modèle par défaut) | Modèle utilisé pour les résumés |
+| Never send (Ne jamais envoyer) | List (Liste) | Mots et valeurs masqués dans les résumés et les conversations partagées, en plus des secrets et des valeurs du `.env` |
 | Appearance (Apparence) | Theme (Thème) | Sombre / clair |
 | About (À propos) | Version, Check for updates (Version, Rechercher des mises à jour) | |
 
@@ -329,6 +364,9 @@ claude-sync pull [--cwd <dir>] [--project <id>] [--all] [--dry-run]
 claude-sync summarize [--cwd <dir>] [--model <id>] [--target handoff|claude-md|agents-md|gemini-md|none]
 claude-sync remote                        List projects stored in the backend
 claude-sync link <dir> <projectId>        Link a local folder to a remote project ID (--remove to unlink)
+claude-sync search <words…> [--json]      Search every conversation (prompts and answers) on this PC
+claude-sync storage [--compact]           Space used by the GitHub store; --compact removes old versions
+claude-sync exclude [<dir>] [--remove]    Turn sync off (or back on) for a project on this PC; no <dir> lists them
 claude-sync config [key] [value]          Show or set config (machineName, backend.folder, backend.github, secretScan, ...)
 claude-sync secret set github-token|anthropic-api-key <value>
 claude-sync hooks install|uninstall       Add/remove the SessionStart/SessionEnd hooks
@@ -600,14 +638,14 @@ Gardez une sauvegarde de la clé de mise à jour. Les applications n'acceptent q
 - L'installateur Windows n'est pas signé numériquement (avertissement SmartScreen).
 - Seul Windows est testé. macOS et Linux se compilent mais n'ont pas d'installateurs publiés.
 - Une conversation ouverte sur deux PC en même temps ne peut pas être fusionnée en direct ; elle devient une copie de conflit.
-- Codex n'a pas de hook « fin de session », donc la synchronisation de Codex a lieu toutes les 15 minutes plutôt qu'instantanément.
+- Codex n'a pas de hook « fin de session », donc une conversation Codex est envoyée environ une minute après qu'elle est devenue calme, et non au moment où elle se termine.
 - Pour les chemins de plus de 200 caractères, l'empreinte exacte que Claude Code utilise dans le nom de dossier n'est pas documentée ; ChatRelay préfère un dossier existant dont les sessions enregistrent le même `cwd`, et sinon utilise son propre suffixe `-<hash>`.
 - Les visionneuses web et téléphone sont en lecture seule et nécessitent le backend GitHub.
 
 ## Feuille de route
 
 - Des adaptateurs pour Gemini CLI, Kiro (IDE et CLI), Cursor et Antigravity, un à la fois, chacun vérifié d'abord sur le vrai outil.
-- Des installateurs signés numériquement ; des versions pour macOS et Linux.
+- Des installateurs signés numériquement ; des versions testées pour macOS et Linux.
 
 ## À propos du changement de nom
 
