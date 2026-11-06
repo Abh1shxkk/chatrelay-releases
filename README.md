@@ -5,19 +5,19 @@
 # ChatRelay
 
 <p>
-  <a href="https://github.com/Abh1shxkk/claude-sync-releases/releases/latest"><img src="https://img.shields.io/github/v/release/Abh1shxkk/claude-sync-releases?style=flat-square&label=release&color=111111" alt="Latest release"></a>
-  <a href="https://github.com/Abh1shxkk/claude-sync-releases/releases/latest"><img src="https://img.shields.io/github/downloads/Abh1shxkk/claude-sync-releases/total?style=flat-square&label=downloads&color=111111" alt="Downloads"></a>
-  <a href="https://github.com/Abh1shxkk/claude-sync-releases/releases/latest"><img src="https://img.shields.io/badge/platform-Windows%20%7C%20Android%20%7C%20Web-111111?style=flat-square" alt="Platforms"></a>
+  <a href="https://github.com/Abh1shxkk/chatrelay-releases/releases/latest"><img src="https://img.shields.io/github/v/release/Abh1shxkk/chatrelay-releases?style=flat-square&label=release&color=111111" alt="Latest release"></a>
+  <a href="https://github.com/Abh1shxkk/chatrelay-releases/releases/latest"><img src="https://img.shields.io/github/downloads/Abh1shxkk/chatrelay-releases/total?style=flat-square&label=downloads&color=111111" alt="Downloads"></a>
+  <a href="https://github.com/Abh1shxkk/chatrelay-releases/releases/latest"><img src="https://img.shields.io/badge/platform-Windows%20%7C%20Android%20%7C%20Web-111111?style=flat-square" alt="Platforms"></a>
   <img src="https://img.shields.io/badge/works%20with-Claude%20Code%20%7C%20Codex-111111?style=flat-square" alt="Works with Claude Code and Codex">
   <img src="https://img.shields.io/badge/built%20with-Rust%20%C2%B7%20Tauri%20%C2%B7%20React-111111?style=flat-square" alt="Built with Rust, Tauri and React">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license"></a>
 </p>
 
 <p>
-  <a href="https://github.com/Abh1shxkk/claude-sync-releases/releases/latest"><b>⬇️ Download for Windows</b></a> &nbsp;·&nbsp;
-  <a href="https://github.com/Abh1shxkk/claude-sync-releases/releases/latest"><b>📱 Android app</b></a> &nbsp;·&nbsp;
-  <a href="https://abh1shxkk.github.io/claude-sync-web/"><b>🌐 Web viewer</b></a> &nbsp;·&nbsp;
-  <a href="https://github.com/Abh1shxkk/claude-sync-releases/releases"><b>📦 All releases</b></a>
+  <a href="https://github.com/Abh1shxkk/chatrelay-releases/releases/latest"><b>⬇️ Download for Windows</b></a> &nbsp;·&nbsp;
+  <a href="https://github.com/Abh1shxkk/chatrelay-releases/releases/latest"><b>📱 Android app</b></a> &nbsp;·&nbsp;
+  <a href="https://abh1shxkk.github.io/chatrelay-web/"><b>🌐 Web viewer</b></a> &nbsp;·&nbsp;
+  <a href="https://github.com/Abh1shxkk/chatrelay-releases/releases"><b>📦 All releases</b></a>
 </p>
 
 <p>Developed by <b>Abhishek Chauhan</b></p>
@@ -40,7 +40,7 @@ ChatRelay syncs the chat history of AI coding assistants (**Claude Code** and **
 >
 > This English file is the reference. The translations cover the same content; if they ever differ, this file wins.
 
-> **Formerly "Claude Sync".** The project was renamed in v0.5.1 because it now handles more than one AI tool. Nothing changes for existing users: the app updates itself in place, settings and history stay where they were (`~/.claude-sync`), the command-line tool is still called `claude-sync`, and the Windows install folder and Start-menu entry keep the old name so updates keep working. See [About the rename](#about-the-rename).
+> **Formerly "Claude Sync".** The project was renamed because it now handles more than one AI tool. Every name changed with it: the app, its install folder, the `chatrelay` command and the `~/.chatrelay` data folder. Coming from Claude Sync? See [About the rename](#about-the-rename).
 
 ---
 
@@ -109,11 +109,11 @@ Verified versions: Claude Code 2.1.x; Codex 0.144 to 0.160 (index database `stat
 
 ### Windows
 
-1. Download `ChatRelay_<version>_x64-setup.exe` from the [latest release](https://github.com/Abh1shxkk/claude-sync-releases/releases/latest). (Releases up to v0.5.0 are named `ClaudeSync_…`.)
+1. Download `ChatRelay_<version>_x64-setup.exe` from the [latest release](https://github.com/Abh1shxkk/chatrelay-releases/releases/latest).
 2. Run it. The installer is not code-signed, so Windows SmartScreen may say "Windows protected your PC": click **More info → Run anyway**.
 3. You only install once. Later versions arrive by themselves (see [Updates](#updates)).
 
-The app installs per user in `%LOCALAPPDATA%\Claude Sync\` (the folder keeps its old name; see [About the rename](#about-the-rename)). It starts in the system tray. Closing the window keeps it running there; use **Quit** in the tray menu to stop it.
+The app installs per user in `%LOCALAPPDATA%\ChatRelay\`. It starts in the system tray. Closing the window keeps it running there; use **Quit** in the tray menu to stop it.
 
 ### Android (viewer)
 
@@ -163,7 +163,7 @@ Best if you also want the web or phone viewer.
 
 On GitHub, each upload is **one commit**. Files bigger than 40 MB (compressed) are split into parts automatically, because GitHub refuses single files over 100 MB.
 
-The token lives only in the OS keychain (service `claude-sync`).
+The token lives only in the OS keychain (service `chatrelay`).
 
 ## Setting up your second PC
 
@@ -212,11 +212,11 @@ Every conversation has a small badge with its tool (**Claude** or **Codex**). Pr
 
 ### Search every conversation
 
-Open **Search** in the activity bar (**Ctrl+Shift+F**) and type a few words. ChatRelay finds every prompt you wrote and every answer the assistant gave that contains all of them, in every project and every tool (Claude Code and Codex), newest first and grouped by conversation, with the words highlighted. Click a match to open that conversation with the words already in its find box. Tool output (file contents, command output) is not searched. The first search reads your history once (under a second for about 2 GB); after that results are instant. From the command line: `claude-sync search <words>`.
+Open **Search** in the activity bar (**Ctrl+Shift+F**) and type a few words. ChatRelay finds every prompt you wrote and every answer the assistant gave that contains all of them, in every project and every tool (Claude Code and Codex), newest first and grouped by conversation, with the words highlighted. Click a match to open that conversation with the words already in its find box. Tool output (file contents, command output) is not searched. The first search reads your history once (under a second for about 2 GB); after that results are instant. From the command line: `chatrelay search <words>`.
 
 ### Keep a project on this PC only
 
-Some projects should never leave a PC, for example client work on an office machine. On the project's page click **Don't sync** (or hover a project in the Simple view and click **don't sync**). From then on nothing from that project is uploaded, and it is not downloaded automatically (auto-sync hooks, background sync, "Upload everything"). A manual **Pull** still works. The project shows a crossed-out status dot and "sync off on this PC"; **Turn sync on** undoes it. From the command line: `claude-sync exclude <dir>` (`--remove` to undo, no folder to list them).
+Some projects should never leave a PC, for example client work on an office machine. On the project's page click **Don't sync** (or hover a project in the Simple view and click **don't sync**). From then on nothing from that project is uploaded, and it is not downloaded automatically (auto-sync hooks, background sync, "Upload everything"). A manual **Pull** still works. The project shows a crossed-out status dot and "sync off on this PC"; **Turn sync on** undoes it. From the command line: `chatrelay exclude <dir>` (`--remove` to undo, no folder to list them).
 
 ### Continue a conversation in the other tool
 
@@ -251,7 +251,7 @@ When **Auto-sync** is on:
 - **Codex**: Codex has no such hook. The desktop app watches Codex's sessions and uploads a changed conversation about a minute after it goes quiet. Every 15 minutes (starting 20 seconds after launch) it also downloads new ones (skipped while Codex is running).
 - Uploads that failed because you were offline are queued and retried.
 
-You can turn auto-sync on or off in Settings, in the tray menu, or with `claude-sync hooks install|uninstall`.
+You can turn auto-sync on or off in Settings, in the tray menu, or with `chatrelay hooks install|uninstall`.
 
 ### Tray menu
 
@@ -259,7 +259,7 @@ Push now · Pull now · Auto-sync on/off · Last sync status · Open · Quit.
 
 ### Backups
 
-Every write is preceded by a backup in `~/.claude-sync/backups/<timestamp>-<what>/`. Open **Backups** (or `claude-sync backups`) to see them, and **Restore** one to put every file back exactly as it was. A restore also removes files that the change had created.
+Every write is preceded by a backup in `~/.chatrelay/backups/<timestamp>-<what>/`. Open **Backups** (or `chatrelay backups`) to see them, and **Restore** one to put every file back exactly as it was. A restore also removes files that the change had created.
 
 ### Logs
 
@@ -310,11 +310,11 @@ Then you can:
 - **Continue in…** a tool: choose Claude Code (`CLAUDE.md`), Codex (`AGENTS.md`) or Gemini CLI (`GEMINI.md`). The list shows the tools installed on this PC. ChatRelay adds a short "Previous context" section (overview, what's done, next steps) to that file. Running it again replaces only its own section; the rest of the file is untouched.
 - Or **copy** the text.
 
-From the command line: `claude-sync summarize --target handoff|claude-md|agents-md|gemini-md|none`.
+From the command line: `chatrelay summarize --target handoff|claude-md|agents-md|gemini-md|none`.
 
 ## Web and phone viewer
 
-**🌐 Live web viewer:** <https://abh1shxkk.github.io/claude-sync-web/>
+**🌐 Live web viewer:** <https://abh1shxkk.github.io/chatrelay-web/>
 
 A read-only version of the app that opens the history in your **GitHub** backend from any browser or from the Android app: projects, conversations from every tool, and full transcripts. It uses the same Rust engine compiled to WebAssembly, so it shows exactly what the desktop app shows. Uploading, downloading, auto-sync and summaries stay in the desktop app, because they need the local history folders.
 
@@ -361,37 +361,37 @@ Not synced, by design: `~/.claude/history.jsonl` (your up-arrow prompt history a
 | Appearance | Theme | Dark / light |
 | About | Version, Check for updates | |
 
-The same settings from the command line: `claude-sync config [key] [value]`, for example `config machineName DESK-1`, `config backend.folder "G:\My Drive\chatrelay"`, `config backend.github me/my-history`, `config secretScan redact`.
+The same settings from the command line: `chatrelay config [key] [value]`, for example `config machineName DESK-1`, `config backend.folder "G:\My Drive\chatrelay"`, `config backend.github me/my-history`, `config secretScan redact`.
 
 ## Command-line tool (CLI)
 
-The installer puts `claude-sync.exe` next to the app (`%LOCALAPPDATA%\Claude Sync\`). It is what the Claude Code hooks run. Add that folder to your `PATH` to use it anywhere. From source: `cargo run -p claude-sync-cli -- …`.
+The installer puts `chatrelay.exe` next to the app (`%LOCALAPPDATA%\ChatRelay\`). It is what the Claude Code hooks run. Add that folder to your `PATH` to use it anywhere. From source: `cargo run -p chatrelay-cli -- …`.
 
 ```
-claude-sync scan [--json]                 List projects & sessions
-claude-sync status [--json]               Backend, last sync, hooks, queue, cleanupPeriodDays
-claude-sync push [--cwd <dir>] [--all] [--dry-run] [--redact]
-claude-sync pull [--cwd <dir>] [--project <id>] [--all] [--dry-run]
-claude-sync summarize [--cwd <dir>] [--model <id>] [--target handoff|claude-md|agents-md|gemini-md|none]
-claude-sync remote                        List projects stored in the backend
-claude-sync link <dir> <projectId>        Link a local folder to a remote project ID (--remove to unlink)
-claude-sync search <words…> [--json]      Search every conversation (prompts and answers) on this PC
-claude-sync storage [--compact]           Space used by the GitHub store; --compact removes old versions
-claude-sync usage [--days N] [--json]     Tokens used by Claude Code and Codex on this PC, by model
-claude-sync exclude [<dir>] [--remove]    Turn sync off (or back on) for a project on this PC; no <dir> lists them
-claude-sync config [key] [value]          Show or set config (machineName, backend.folder, backend.github, secretScan, ...)
-claude-sync secret set github-token|anthropic-api-key <value>
-claude-sync hooks install|uninstall       Add/remove the SessionStart/SessionEnd hooks
-claude-sync cleanup-days <n>              Set Claude Code's cleanupPeriodDays (backs up settings.json)
-claude-sync backups [restore <id>]        List or restore backups
-claude-sync queue                         Retry queued (offline) pushes
+chatrelay scan [--json]                 List projects & sessions
+chatrelay status [--json]               Backend, last sync, hooks, queue, cleanupPeriodDays
+chatrelay push [--cwd <dir>] [--all] [--dry-run] [--redact]
+chatrelay pull [--cwd <dir>] [--project <id>] [--all] [--dry-run]
+chatrelay summarize [--cwd <dir>] [--model <id>] [--target handoff|claude-md|agents-md|gemini-md|none]
+chatrelay remote                        List projects stored in the backend
+chatrelay link <dir> <projectId>        Link a local folder to a remote project ID (--remove to unlink)
+chatrelay search <words…> [--json]      Search every conversation (prompts and answers) on this PC
+chatrelay storage [--compact]           Space used by the GitHub store; --compact removes old versions
+chatrelay usage [--days N] [--json]     Tokens used by Claude Code and Codex on this PC, by model
+chatrelay exclude [<dir>] [--remove]    Turn sync off (or back on) for a project on this PC; no <dir> lists them
+chatrelay config [key] [value]          Show or set config (machineName, backend.folder, backend.github, secretScan, ...)
+chatrelay secret set github-token|anthropic-api-key <value>
+chatrelay hooks install|uninstall       Add/remove the SessionStart/SessionEnd hooks
+chatrelay cleanup-days <n>              Set Claude Code's cleanupPeriodDays (backs up settings.json)
+chatrelay backups [restore <id>]        List or restore backups
+chatrelay queue                         Retry queued (offline) pushes
 
 Other AI coding tools (provider = claude-code | codex):
-claude-sync providers [--json]            Which tools are installed, their version/format, import on/off
-claude-sync providers sessions <provider> [--cwd <dir>] [--json]
-claude-sync providers show <provider> <id> [--json]      Read a session in the tool-neutral format
-claude-sync providers export <provider> <id> --out <file.json.gz>
-claude-sync providers import <file.json.gz> --to <dir> [--dry-run]
+chatrelay providers [--json]            Which tools are installed, their version/format, import on/off
+chatrelay providers sessions <provider> [--cwd <dir>] [--json]
+chatrelay providers show <provider> <id> [--json]      Read a session in the tool-neutral format
+chatrelay providers export <provider> <id> --out <file.json.gz>
+chatrelay providers import <file.json.gz> --to <dir> [--dry-run]
 
 Flags: --hook (read Claude Code hook JSON from stdin; never fails), --quiet, --json, --verbose
 ```
@@ -402,7 +402,7 @@ Environment variables:
 
 | Variable | Effect |
 |---|---|
-| `CLAUDE_SYNC_HOME` | ChatRelay's own data folder (default `~/.claude-sync`) |
+| `CHATRELAY_HOME` | ChatRelay's own data folder (default `~/.chatrelay`) |
 | `CLAUDE_CONFIG_DIR` | Claude Code's folder (default `~/.claude`) |
 | `CODEX_HOME` | Codex's folder (default `~/.codex`) |
 | `ANTHROPIC_API_KEY` | Used for summaries when no key is saved in the keychain |
@@ -439,9 +439,9 @@ Each AI tool is an **adapter** (`crates/core/src/providers/`) behind one interfa
 
 The same project has a different path on each PC, so it is identified by, in order:
 
-1. A **manual link** (Link button / `claude-sync link <dir> <id>`), stored in ChatRelay's config
+1. A **manual link** (Link button / `chatrelay link <dir> <id>`), stored in ChatRelay's config
 2. The **git remote**, normalized: `git@github.com:Me/Repo.git` and `https://github.com/me/repo` both become `git:github.com/me/repo`
-3. A **`.claude-sync.json`** in the project root holding a UUID, created on first push for non-git projects (commit it, or link manually on the other PC). "Upload everything" and background sync create a link in ChatRelay's config instead, so nothing is written into your project folders.
+3. A **`.chatrelay.json`** in the project root holding a UUID, created on first push for non-git projects (commit it, or link manually on the other PC). "Upload everything" and background sync create a link in ChatRelay's config instead, so nothing is written into your project folders.
 
 ### Storage layout (in the folder or repo)
 
@@ -464,7 +464,7 @@ Other tools' sessions are listed under `providerSessions` in the manifest (key `
 - Sessions are compared by SHA-256; only new or changed ones are uploaded. Originals are only ever read.
 - **Only new lines are sent.** AI tools only ever append to a conversation file, so after a session's first upload a push stores just the lines added since the last sync as a "delta" part. Each part records the paths of the machine that pushed it. Session hashes are chained (`hash = sha256(previous : sha256(part))`). After 40 parts the next push uploads the whole session again. When the shortcut doesn't apply (the file changed some other way, a conflict, state from an older version) the whole file is uploaded.
 - If the backend has a version you haven't seen that contains messages you don't have, that session's push is refused with "pull first", so nothing is lost.
-- **Offline?** (GitHub unreachable, the cloud drive not mounted.) The push is queued in `~/.claude-sync/queue.json` and retried on the next run and every 15 minutes by the desktop app.
+- **Offline?** (GitHub unreachable, the cloud drive not mounted.) The push is queued in `~/.chatrelay/queue.json` and retried on the next run and every 15 minutes by the desktop app.
 
 ### Pull
 
@@ -481,30 +481,30 @@ Other tools' sessions are listed under `providerSessions` in the manifest (key `
 
 ```jsonc
 "hooks": {
-  "SessionStart": [{ "hooks": [{ "type": "command", "command": "\"…/Claude Sync/claude-sync.exe\" pull --hook --quiet --claude-sync-hook", "timeout": 60 }] }],
-  "SessionEnd":   [{ "hooks": [{ "type": "command", "command": "\"…/Claude Sync/claude-sync.exe\" push --hook --quiet --claude-sync-hook", "timeout": 60 }] }]
+  "SessionStart": [{ "hooks": [{ "type": "command", "command": "\"…/ChatRelay/chatrelay.exe\" pull --hook --quiet --chatrelay-hook", "timeout": 60 }] }],
+  "SessionEnd":   [{ "hooks": [{ "type": "command", "command": "\"…/ChatRelay/chatrelay.exe\" push --hook --quiet --chatrelay-hook", "timeout": 60 }] }]
 }
 ```
 
 - `--hook` reads Claude Code's hook JSON from stdin (`cwd`, `session_id`), falling back to `CLAUDE_PROJECT_DIR` and then the working directory. Hooks **always exit 0**, so they can never break a session; errors go to the Logs panel.
-- The hook runs the native `claude-sync` executable installed next to the app. No Node.js needed.
-- "Disable auto-sync" removes only the hooks containing the `claude-sync-hook` marker.
+- The hook runs the native `chatrelay` executable installed next to the app. No Node.js needed.
+- "Disable auto-sync" removes only the hooks containing the `chatrelay-hook` marker.
 
 ## Files ChatRelay reads and writes
 
 | Where | What |
 |---|---|
-| `~/.claude-sync/config.json` | Machine name and ID, backend, links, options |
-| `~/.claude-sync/state.json` | Per-session sync bookkeeping (hashes and sizes last pushed/pulled) |
-| `~/.claude-sync/backups/` | Timestamped backups |
-| `~/.claude-sync/logs/claude-sync.log` | JSON-lines log (Logs panel, copyable error report) |
-| `~/.claude-sync/queue.json` | Pushes waiting for the backend |
-| `~/.claude-sync/scan-cache.json` | Scan cache (sizes, times, titles) |
-| OS keychain, service `claude-sync` | `github-token`, `anthropic-api-key` |
+| `~/.chatrelay/config.json` | Machine name and ID, backend, links, options |
+| `~/.chatrelay/state.json` | Per-session sync bookkeeping (hashes and sizes last pushed/pulled) |
+| `~/.chatrelay/backups/` | Timestamped backups |
+| `~/.chatrelay/logs/chatrelay.log` | JSON-lines log (Logs panel, copyable error report) |
+| `~/.chatrelay/queue.json` | Pushes waiting for the backend |
+| `~/.chatrelay/scan-cache.json` | Scan cache (sizes, times, titles) |
+| OS keychain, service `chatrelay` | `github-token`, `anthropic-api-key` |
 | `~/.claude/projects/…` | Claude Code conversations (read; written on pull) |
 | `~/.claude/settings.json` | Only for auto-sync hooks and `cleanupPeriodDays` (backed up first) |
 | `~/.codex/sessions/…`, `state_5.sqlite`, `session_index.jsonl`, `memories_1.sqlite`, `goals_1.sqlite` | Codex conversations and their index (read; written on pull, only while Codex is closed, backed up first) |
-| `<project>/.claude-sync.json` | Only for non-git projects pushed from a project screen |
+| `<project>/.chatrelay.json` | Only for non-git projects pushed from a project screen |
 | `<project>/HANDOFF.md`, `CLAUDE.md`, `AGENTS.md`, `GEMINI.md` | Only when you save a summary there |
 
 ## Updates
@@ -519,7 +519,7 @@ Other tools' sessions are listed under `providerSessions` in the manifest (key `
 
 **A project shows a yellow dot.** It has conversations on this PC that aren't uploaded yet. Push it, or turn on auto-sync.
 
-**A project from my other PC doesn't appear / appears under a different name.** Projects are matched by git remote, a `.claude-sync.json`, or a link. If the folders have different names and no git remote, use **Link** (or **Import into…**) once and pick the right local folder.
+**A project from my other PC doesn't appear / appears under a different name.** Projects are matched by git remote, a `.chatrelay.json`, or a link. If the folders have different names and no git remote, use **Link** (or **Import into…**) once and pick the right local folder.
 
 **A Codex conversation was skipped: "Codex is running".** Close the Codex CLI, the VS Code extension's Codex panel (or VS Code) and the Codex desktop app, then pull again. Background sync retries by itself.
 
@@ -527,7 +527,7 @@ Other tools' sessions are listed under `providerSessions` in the manifest (key `
 
 **I see a conversation twice, one ending with "(from OFFICE-PC)".** It was continued on both PCs before they synced. Both versions are kept; delete the one you don't need in the tool.
 
-**My old Claude Code conversations disappeared.** Claude Code deletes conversations older than `cleanupPeriodDays` (default 30). Raise it in Settings (or `claude-sync cleanup-days 3650`). Already-uploaded conversations can be pulled back from the backend.
+**My old Claude Code conversations disappeared.** Claude Code deletes conversations older than `cleanupPeriodDays` (default 30). Raise it in Settings (or `chatrelay cleanup-days 3650`). Already-uploaded conversations can be pulled back from the backend.
 
 **Did syncing log me out of Claude?** No. ChatRelay never reads or writes login files. See [Safety and privacy](#safety-and-privacy).
 
@@ -535,11 +535,11 @@ Other tools' sessions are listed under `providerSessions` in the manifest (key `
 
 **"Pull first" when pushing.** Another PC uploaded a newer version that yours doesn't contain. Pull, then push.
 
-**Offline.** Pushes are queued and retried automatically; `claude-sync queue` retries now.
+**Offline.** Pushes are queued and retried automatically; `chatrelay queue` retries now.
 
 **Something went wrong after a pull.** Open **Backups** and restore the backup made just before it.
 
-**Where do I find errors?** The **Logs** view (copy an error report from there), or `~/.claude-sync/logs/claude-sync.log`.
+**Where do I find errors?** The **Logs** view (copy an error report from there), or `~/.chatrelay/logs/chatrelay.log`.
 
 ## Building from source and development
 
@@ -563,9 +563,9 @@ crates/core/       Rust engine: scanner, JSONL, path rewriting, sync, backends, 
 crates/core/src/providers/   AI tool adapters: claude_code.rs, codex.rs (+ codex_format.rs, browser-safe parsing)
 crates/core/src/provider_sync.rs   other tools' sessions in push/pull (bundles, deltas, conflict copies)
 crates/core/tests/  integration tests with fixture files (tests/fixtures/codex, tests/fixtures/claude-code)
-crates/cli/        the `claude-sync` CLI (also what the Claude Code hooks run)
+crates/cli/        the `chatrelay` CLI (also what the Claude Code hooks run)
 crates/wasm/       the engine compiled to WebAssembly for the web and phone viewers
-src-tauri/         desktop app: window, tray, background sync, the API behind window.claudeSync
+src-tauri/         desktop app: window, tray, background sync, the API behind window.chatRelay
 src/renderer/      React + TypeScript + Tailwind UI (shared by desktop, web and phone)
 src/shared/        TypeScript types and helpers
 mobile/            Android / iOS shell around the web version (Tauri)
@@ -576,8 +576,8 @@ tests/             vitest tests; tests/web/mock-github.mjs for testing the web v
 Running a development copy next to an installed one: set a separate identifier and data folder, so it never touches your real settings:
 
 ```powershell
-$env:TAURI_CONFIG='{"identifier":"com.claudesync.dev","productName":"ChatRelay Dev"}'
-$env:CLAUDE_SYNC_HOME='D:\tmp\chatrelay-dev'
+$env:TAURI_CONFIG='{"identifier":"com.chatrelay.dev","productName":"ChatRelay Dev"}'
+$env:CHATRELAY_HOME='D:\tmp\chatrelay-dev'
 npm run tauri:dev
 ```
 
@@ -591,7 +591,7 @@ npm run web:dev      # http://localhost:5175/web.html
 npm run web:build    # static site in out/web/ (host on GitHub Pages, Cloudflare Pages, Netlify…)
 ```
 
-`node tests/web/mock-github.mjs <folder-backend>` serves a folder backend as a fake GitHub API (dev builds only: set `localStorage['claude-sync-web:apiBase'] = 'http://localhost:5176'` and use the token `test-token-123456`).
+`node tests/web/mock-github.mjs <folder-backend>` serves a folder backend as a fake GitHub API (dev builds only: set `localStorage['chatrelay-web:apiBase'] = 'http://localhost:5176'` and use the token `test-token-123456`).
 
 ### Mobile app (Android, iOS)
 
@@ -602,19 +602,19 @@ $env:JAVA_HOME = "<jdk-17>"; $env:ANDROID_HOME = "<android-sdk>"; $env:NDK_HOME 
 npm run mobile:android:init      # once: generates mobile/gen/android
 npm run mobile:android:apk       # debug APK for a phone (arm64)
 adb install -r <that apk>
-npm run mobile:android:release   # release APK/AAB, signed when CLAUDE_SYNC_KEYSTORE_PROPERTIES is set
+npm run mobile:android:release   # release APK/AAB, signed when CHATRELAY_KEYSTORE_PROPERTIES is set
 ```
 
-Release signing reads a properties file kept **outside the repo**, named by `CLAUDE_SYNC_KEYSTORE_PROPERTIES`:
+Release signing reads a properties file kept **outside the repo**, named by `CHATRELAY_KEYSTORE_PROPERTIES`:
 
 ```properties
-storeFile=D:/dev/android-keys/claude-sync-release.jks
+storeFile=D:/dev/android-keys/chatrelay-release.jks
 storePassword=…
-keyAlias=claude-sync
+keyAlias=chatrelay
 keyPassword=…
 ```
 
-Create the key once with `keytool -genkeypair -keystore claude-sync-release.jks -alias claude-sync -keyalg RSA -keysize 4096 -validity 10000` and back it up: updates to an installed app must be signed with the same key.
+Create the key once with `keytool -genkeypair -keystore chatrelay-release.jks -alias chatrelay -keyalg RSA -keysize 4096 -validity 10000` and back it up: updates to an installed app must be signed with the same key.
 
 **iOS** needs a Mac with Xcode and `rustup target add aarch64-apple-ios aarch64-apple-ios-sim`:
 
@@ -636,12 +636,12 @@ npm run mobile:ios:build
 
 ## Publishing a release
 
-Installed apps check `latest.json` on [Abh1shxkk/claude-sync-releases](https://github.com/Abh1shxkk/claude-sync-releases).
+Installed apps check `latest.json` on [Abh1shxkk/chatrelay-releases](https://github.com/Abh1shxkk/chatrelay-releases).
 
 1. Bump `version` in `package.json`, `src-tauri/tauri.conf.json`, `mobile/tauri.conf.json` and `Cargo.toml`.
 2. `npm run release -- --notes "What changed"`
 
-That builds the Windows installer signed with the updater key (`TAURI_SIGNING_PRIVATE_KEY`, or `D:\dev\tauri-keys\claude-sync-updater.key` with its `.password` file) and the signed APK, writes `latest.json` and uploads everything as release `v<version>`. Flags: `--no-apk`, `--skip-build`, `--dry-run`, `--notes-file <file>`. The GitHub login comes from `git credential fill` (or `GITHUB_TOKEN`).
+That builds the Windows installer signed with the updater key (`TAURI_SIGNING_PRIVATE_KEY`, or `D:\dev\tauri-keys\chatrelay-updater.key` with its `.password` file) and the signed APK, writes `latest.json` and uploads everything as release `v<version>`. Flags: `--no-apk`, `--skip-build`, `--dry-run`, `--notes-file <file>`. The GitHub login comes from `git credential fill` (or `GITHUB_TOKEN`).
 
 Keep the updater key backed up. Apps only accept updates signed with it; its public half is in `src-tauri/tauri.conf.json`.
 
@@ -661,17 +661,18 @@ Keep the updater key backed up. Apps only accept updates signed with it; its pub
 
 ## About the rename
 
-ChatRelay was called **Claude Sync** until v0.5.0. To keep existing installs updating and nothing lost, these internal names did **not** change:
+ChatRelay was called **Claude Sync** until v0.5.0. Since then every name has changed too: the app and its install folder (`%LOCALAPPDATA%\ChatRelay`), the `chatrelay` command, the `~/.chatrelay` data folder, the `CHATRELAY_*` environment variables, `.chatrelay.json` project files, the keychain service `chatrelay` and the releases repository [chatrelay-releases](https://github.com/Abh1shxkk/chatrelay-releases).
 
-| Kept | Why |
-|---|---|
-| Install folder and Start-menu entry "Claude Sync" | Windows identifies the installed app by it; changing it would install a second copy instead of updating |
-| App identifier `com.claudesync.app` / `com.claudesync.mobile` | Updates and Android installs depend on it |
-| `~/.claude-sync/` data folder, `CLAUDE_SYNC_HOME` | Your settings, sync state and backups |
-| `claude-sync` CLI | Claude Code hooks call it by path |
-| `.claude-sync.json` project files, `claude-sync-hook` marker | Existing projects and hooks keep working |
-| Releases repo `claude-sync-releases` | Installed apps download updates from it |
-| GitHub App "claude-sync-abh1shxkk" | Existing sign-ins keep working |
+Moving over from Claude Sync, once per PC:
+
+1. Quit Claude Sync (tray → **Quit**) and uninstall it in Windows **Settings → Apps**.
+2. Rename the folder `~/.claude-sync` to `~/.chatrelay`. Your settings, sync state and backups come with it.
+3. Install ChatRelay, then turn **Auto-sync** on. This replaces the old Claude Sync hooks in `~/.claude/settings.json`.
+4. Add your GitHub token and API keys again (**Settings → Secrets**, or sign in with GitHub). They were saved in the keychain under the old name.
+5. Rename any `.claude-sync.json` in your project folders to `.chatrelay.json`.
+6. On Android, uninstall the old app before installing the new APK.
+
+Your history in GitHub or the sync folder does not change; nothing needs to be uploaded again.
 
 ## License
 
