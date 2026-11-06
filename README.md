@@ -8,7 +8,7 @@
   <a href="https://github.com/Abh1shxkk/chatrelay-releases/releases/latest"><img src="https://img.shields.io/github/v/release/Abh1shxkk/chatrelay-releases?style=flat-square&label=release&color=111111" alt="Latest release"></a>
   <a href="https://github.com/Abh1shxkk/chatrelay-releases/releases/latest"><img src="https://img.shields.io/github/downloads/Abh1shxkk/chatrelay-releases/total?style=flat-square&label=downloads&color=111111" alt="Downloads"></a>
   <a href="https://github.com/Abh1shxkk/chatrelay-releases/releases/latest"><img src="https://img.shields.io/badge/platform-Windows%20%7C%20Android%20%7C%20Web-111111?style=flat-square" alt="Platforms"></a>
-  <img src="https://img.shields.io/badge/works%20with-Claude%20Code%20%7C%20Codex-111111?style=flat-square" alt="Works with Claude Code and Codex">
+  <img src="https://img.shields.io/badge/works%20with-Claude%20Code%20%7C%20Codex%20%7C%20Cursor%20%7C%20Kiro%20%7C%20Antigravity-111111?style=flat-square" alt="Works with Claude Code, Codex, Cursor, Kiro and Antigravity">
   <img src="https://img.shields.io/badge/built%20with-Rust%20%C2%B7%20Tauri%20%C2%B7%20React-111111?style=flat-square" alt="Built with Rust, Tauri and React">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license"></a>
 </p>
@@ -34,7 +34,7 @@
 
 **Take your AI coding chats to any PC, and from one AI tool to another.**
 
-ChatRelay syncs the chat history of AI coding assistants (**Claude Code** and **OpenAI Codex** today) between your computers. Start a conversation on your office PC, then open the same conversation on your home laptop: same messages, same tool calls, with every file path changed to the new machine's paths. It also writes a short summary of a project's history into the instructions file another tool reads (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`), so you can continue the work in a different AI tool.
+ChatRelay syncs the chat history of AI coding assistants (**Claude Code**, **OpenAI Codex**, **Cursor**, **Kiro** and **Antigravity**) between your devices. Start a conversation on your desktop, then open the same conversation on your laptop: same messages, same tool calls, with every file path changed to the new machine's paths. It also writes a short summary of a project's history into the instructions file another tool reads (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`), so you can continue the work in a different AI tool.
 
 > **Languages:** **English** · [简体中文](docs/i18n/README.zh-CN.md) · [हिन्दी](docs/i18n/README.hi.md) · [Español](docs/i18n/README.es.md) · [Português](docs/i18n/README.pt-BR.md) · [Français](docs/i18n/README.fr.md) · [Deutsch](docs/i18n/README.de.md) · [日本語](docs/i18n/README.ja.md) · [한국어](docs/i18n/README.ko.md) · [Русский](docs/i18n/README.ru.md)
 >
@@ -97,9 +97,8 @@ ChatRelay syncs the chat history of AI coding assistants (**Claude Code** and **
 | **OpenAI Codex** | Codex CLI, VS Code extension, Codex desktop app | ✅ | ✅ (upload ~1 min after a chat goes quiet, download every 15 min) | ✅ `codex resume`, Codex sidebar | `AGENTS.md` |
 | **Antigravity** | Antigravity IDE, Antigravity CLI | ✅ | ✅ read-only: viewable, searchable and summarizable on every device | ❌ (not written back into Antigravity) | `GEMINI.md` |
 | Gemini CLI | Terminal | ❌ Google no longer lets personal accounts sign in to it (they are moved to Antigravity, supported above) | | | `GEMINI.md` (summary target available) |
-| **Cursor** | Cursor editor (Agent chat) | ✅ | ✅ read-only: viewable, searchable and summarizable on every device | ❌ (not written back into Cursor) | `AGENTS.md` |
-| **Kiro** | Kiro editor (agent chat) | ✅ | ✅ read-only: viewable, searchable and summarizable on every device | ❌ (not written back into Kiro) | `AGENTS.md` |
-| Kiro CLI, Cursor CLI | | planned | planned | planned | |
+| **Cursor** | Cursor editor (Agent chat), Cursor CLI | ✅ | ✅ read-only: viewable, searchable and summarizable on every device | ❌ (not written back into Cursor) | `AGENTS.md` |
+| **Kiro** | Kiro editor (agent chat), Kiro CLI | ✅ | ✅ read-only: viewable, searchable and summarizable on every device | ❌ (not written back into Kiro) | `AGENTS.md` |
 
 Each tool keeps its history in its own undocumented format, and those formats change between versions. So ChatRelay checks the format it finds on your PC. If it sees a version it doesn't know, it still shows the conversations, but **turns off writing** for that tool and tells you why in **Settings → AI tools**. It never guesses.
 
@@ -133,7 +132,7 @@ When ChatRelay opens for the first time, a setup wizard walks you through these 
 
 1. **Your history.** ChatRelay finds Claude Code's history in `%USERPROFILE%\.claude\projects` (or the folder in `CLAUDE_CONFIG_DIR`) and Codex's in `%USERPROFILE%\.codex` (or `CODEX_HOME`). It shows how many conversations it found per tool.
 2. **Claude Code's 30-day deletion.** By default Claude Code deletes conversations older than 30 days (`cleanupPeriodDays`). ChatRelay shows this and offers to raise it. It backs up `settings.json` before changing it.
-3. **Machine name.** For example `OFFICE-PC` or `HOME-LAPTOP`. It is shown next to every conversation, so you know which PC it came from.
+3. **Machine name.** For example `DESKTOP` or `LAPTOP`. It is shown next to every conversation, so you know which PC it came from.
 4. **Storage (backend).** A folder (Google Drive, OneDrive, Dropbox, network drive) or a private GitHub repository. See the next section.
 5. **Anthropic API key (optional).** Only needed for summaries. It is stored in the Windows Credential Manager (OS keychain), never in a file.
 6. **Auto-sync.** Turns on automatic upload/download (Claude Code hooks plus the background timer).
@@ -212,11 +211,11 @@ Every conversation has a small badge with its tool (**Claude** or **Codex**). Pr
 
 ### Search every conversation
 
-Open **Search** in the activity bar (**Ctrl+Shift+F**) and type a few words. ChatRelay finds every prompt you wrote and every answer the assistant gave that contains all of them, in every project and every tool (Claude Code and Codex), newest first and grouped by conversation, with the words highlighted. Click a match to open that conversation with the words already in its find box. Tool output (file contents, command output) is not searched. The first search reads your history once (under a second for about 2 GB); after that results are instant. From the command line: `chatrelay search <words>`.
+Open **Search** in the activity bar (**Ctrl+Shift+F**) and type a few words. ChatRelay finds every prompt you wrote and every answer the assistant gave that contains all of them, in every project and every tool, newest first and grouped by conversation, with the words highlighted. Click a match to open that conversation with the words already in its find box. Tool output (file contents, command output) is not searched. The first search reads your history once (under a second for about 2 GB); after that results are instant. From the command line: `chatrelay search <words>`.
 
 ### Keep a project on this PC only
 
-Some projects should never leave a PC, for example client work on an office machine. On the project's page click **Don't sync** (or hover a project in the Simple view and click **don't sync**). From then on nothing from that project is uploaded, and it is not downloaded automatically (auto-sync hooks, background sync, "Upload everything"). A manual **Pull** still works. The project shows a crossed-out status dot and "sync off on this PC"; **Turn sync on** undoes it. From the command line: `chatrelay exclude <dir>` (`--remove` to undo, no folder to list them).
+Some projects should never leave a PC, for example client work that must stay on one machine. On the project's page click **Don't sync** (or hover a project in the Simple view and click **don't sync**). From then on nothing from that project is uploaded, and it is not downloaded automatically (auto-sync hooks, background sync, "Upload everything"). A manual **Pull** still works. The project shows a crossed-out status dot and "sync off on this PC"; **Turn sync on** undoes it. From the command line: `chatrelay exclude <dir>` (`--remove` to undo, no folder to list them).
 
 ### Continue a conversation in the other tool
 
@@ -525,7 +524,7 @@ Other tools' sessions are listed under `providerSessions` in the manifest (key `
 
 **Codex import is off: "Unknown Codex index database" / "new required fields".** Your Codex is newer than this ChatRelay version knows. Update ChatRelay. Your conversations are still visible.
 
-**I see a conversation twice, one ending with "(from OFFICE-PC)".** It was continued on both PCs before they synced. Both versions are kept; delete the one you don't need in the tool.
+**I see a conversation twice, one ending with "(from DESKTOP)".** It was continued on both PCs before they synced. Both versions are kept; delete the one you don't need in the tool.
 
 **My old Claude Code conversations disappeared.** Claude Code deletes conversations older than `cleanupPeriodDays` (default 30). Raise it in Settings (or `chatrelay cleanup-days 3650`). Already-uploaded conversations can be pulled back from the backend.
 
@@ -656,7 +655,7 @@ Keep the updater key backed up. Apps only accept updates signed with it; its pub
 
 ## Roadmap
 
-- Adapters for the Kiro CLI and the Cursor CLI, one at a time, each verified against the real tool first. Restoring Antigravity conversations into Antigravity.
+- Restoring Antigravity, Cursor and Kiro conversations into those tools.
 - Code-signed installers; tested macOS and Linux builds.
 
 ## About the rename
