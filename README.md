@@ -84,7 +84,7 @@ ChatRelay syncs the chat history of AI coding assistants (**Claude Code**, **Ope
 - **Shows your usage:** conversations, messages and tokens per day, models, the hours you work, busiest projects and longest conversations.
 - **Summarizes.** It turns a project's whole history (from every tool) into a `HANDOFF.md`: what's done, decisions, open bugs, next steps, files touched. It can also put a short version into `CLAUDE.md`, `AGENTS.md` or `GEMINI.md`, so the next tool starts with the context.
 - **Read anywhere.** A read-only web page and an Android app show all your conversations from the GitHub storage, on any device.
-- **Looks like VS Code.** Black-and-white, VS Code-style desktop app, with dark and light themes, a simple view for everyday use and an advanced view with every detail.
+- **Looks like VS Code.** Black-and-white, VS Code-style desktop app with each tool's real logo, smooth small animations (off if your system asks for less motion), dark and light themes, a simple view for everyday use and an advanced view with every detail.
 
 ## Supported AI tools
 
