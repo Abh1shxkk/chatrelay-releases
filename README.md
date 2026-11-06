@@ -40,8 +40,6 @@ ChatRelay syncs the chat history of AI coding assistants (**Claude Code**, **Ope
 >
 > This English file is the reference. The translations cover the same content; if they ever differ, this file wins.
 
-> **Formerly "Claude Sync".** The project was renamed because it now handles more than one AI tool. Every name changed with it: the app, its install folder, the `chatrelay` command and the `~/.chatrelay` data folder. Coming from Claude Sync? See [About the rename](#about-the-rename).
-
 ---
 
 ## Contents
@@ -68,14 +66,13 @@ ChatRelay syncs the chat history of AI coding assistants (**Claude Code**, **Ope
 20. [Publishing a release](#publishing-a-release)
 21. [Known limitations](#known-limitations)
 22. [Roadmap](#roadmap)
-23. [About the rename](#about-the-rename)
-24. [License](#license)
+23. [License](#license)
 
 ---
 
 ## What it does
 
-- **Moves chat history between PCs.** Every conversation from Claude Code (terminal CLI and VS Code extension) and Codex (CLI, VS Code extension and desktop app) is copied to a storage place you own, and from there to your other PCs. On the other PC it appears in the tool's own history list: `claude --resume`, the Claude Code panel in VS Code, `codex resume`, or the Codex sidebar.
+- **Moves chat history between PCs.** Every conversation from Claude Code (terminal CLI and VS Code extension) and Codex (CLI, VS Code extension and desktop app) is copied to a storage place you own, and from there to your other PCs. On the other PC it appears in the tool's own history list: `claude --resume`, the Claude Code panel in VS Code, `codex resume`, or the Codex sidebar. Chats from Cursor, Kiro and Antigravity (editor and CLI) are copied too, and open in ChatRelay on every device.
 - **Fixes file paths.** Your project might be `C:\Users\me\shop` on one PC and `D:\work\shop` on another, or `/home/me/shop` on Linux. ChatRelay rewrites every path inside the chat (working folder, tool inputs and outputs, file links, message text) to the path on the receiving PC.
 - **Only sends what changed.** After the first upload, only the new lines of a conversation travel: a few KB instead of the whole file.
 - **Never loses work.** It never edits your originals when uploading. It backs up every file before it changes it, shows a preview (dry run) first, and never overwrites a conversation that changed on both PCs: it keeps both.
@@ -102,7 +99,7 @@ ChatRelay syncs the chat history of AI coding assistants (**Claude Code**, **Ope
 
 Each tool keeps its history in its own undocumented format, and those formats change between versions. So ChatRelay checks the format it finds on your PC. If it sees a version it doesn't know, it still shows the conversations, but **turns off writing** for that tool and tells you why in **Settings → AI tools**. It never guesses.
 
-Verified versions: Claude Code 2.1.x; Codex 0.144 to 0.160 (index database `state_5.sqlite`, schema migration 58).
+Verified versions: Claude Code 2.1.x; Codex 0.144 to 0.160 (index database `state_5.sqlite`, schema migration 58); Antigravity 2.6; Cursor 3.28 and its CLI; Kiro 1.4 and Kiro CLI 3.1.
 
 ## Download and install
 
@@ -130,7 +127,7 @@ The web viewer is a static page you can host yourself (GitHub Pages, Cloudflare 
 
 When ChatRelay opens for the first time, a setup wizard walks you through these steps. You can run it again any time from the command palette (**Ctrl+Shift+P → Run First-time Setup Again**).
 
-1. **Your history.** ChatRelay finds Claude Code's history in `%USERPROFILE%\.claude\projects` (or the folder in `CLAUDE_CONFIG_DIR`) and Codex's in `%USERPROFILE%\.codex` (or `CODEX_HOME`). It shows how many conversations it found per tool.
+1. **Your history.** ChatRelay finds Claude Code's history in `%USERPROFILE%\.claude\projects` (or the folder in `CLAUDE_CONFIG_DIR`) and Codex's in `%USERPROFILE%\.codex` (or `CODEX_HOME`). It also finds your Cursor, Kiro and Antigravity chats, and shows how many conversations it found per tool.
 2. **Claude Code's 30-day deletion.** By default Claude Code deletes conversations older than 30 days (`cleanupPeriodDays`). ChatRelay shows this and offers to raise it. It backs up `settings.json` before changing it.
 3. **Machine name.** For example `DESKTOP` or `LAPTOP`. It is shown next to every conversation, so you know which PC it came from.
 4. **Storage (backend).** A folder (Google Drive, OneDrive, Dropbox, network drive) or a private GitHub repository. See the next section.
@@ -207,7 +204,7 @@ Switch between them with **Ctrl+Shift+P → Switch to Simple/Advanced View**.
 
 ### Conversations from several tools
 
-Every conversation has a small badge with its tool (**Claude** or **Codex**). Projects where you used more than one tool show a **filter** (All / Claude Code / Codex). Opening a conversation shows the full transcript: your messages, the assistant's answers, tool calls (commands run, files edited) and the list of changed files.
+Every conversation has a small badge with its tool (**Claude**, **Codex**, **Cursor**, **Kiro** or **Antigravity**). Projects where you used more than one tool show a **filter** (All, or one tool). Opening a conversation shows the full transcript: your messages, the assistant's answers, tool calls (commands run, files edited) and the list of changed files.
 
 ### Search every conversation
 
@@ -385,7 +382,7 @@ chatrelay cleanup-days <n>              Set Claude Code's cleanupPeriodDays (bac
 chatrelay backups [restore <id>]        List or restore backups
 chatrelay queue                         Retry queued (offline) pushes
 
-Other AI coding tools (provider = claude-code | codex):
+Any AI tool (provider = claude-code | codex | antigravity | cursor | kiro):
 chatrelay providers [--json]            Which tools are installed, their version/format, import on/off
 chatrelay providers sessions <provider> [--cwd <dir>] [--json]
 chatrelay providers show <provider> <id> [--json]      Read a session in the tool-neutral format
@@ -657,21 +654,6 @@ Keep the updater key backed up. Apps only accept updates signed with it; its pub
 
 - Restoring Antigravity, Cursor and Kiro conversations into those tools.
 - Code-signed installers; tested macOS and Linux builds.
-
-## About the rename
-
-ChatRelay was called **Claude Sync** until v0.5.0. Since then every name has changed too: the app and its install folder (`%LOCALAPPDATA%\ChatRelay`), the `chatrelay` command, the `~/.chatrelay` data folder, the `CHATRELAY_*` environment variables, `.chatrelay.json` project files, the keychain service `chatrelay` and the releases repository [chatrelay-releases](https://github.com/Abh1shxkk/chatrelay-releases).
-
-Moving over from Claude Sync, once per PC:
-
-1. Quit Claude Sync (tray → **Quit**) and uninstall it in Windows **Settings → Apps**.
-2. Rename the folder `~/.claude-sync` to `~/.chatrelay`. Your settings, sync state and backups come with it.
-3. Install ChatRelay, then turn **Auto-sync** on. This replaces the old Claude Sync hooks in `~/.claude/settings.json`.
-4. Add your GitHub token and API keys again (**Settings → Secrets**, or sign in with GitHub). They were saved in the keychain under the old name.
-5. Rename any `.claude-sync.json` in your project folders to `.chatrelay.json`.
-6. On Android, uninstall the old app before installing the new APK.
-
-Your history in GitHub or the sync folder does not change; nothing needs to be uploaded again.
 
 ## License
 
